@@ -112,7 +112,7 @@
             <mxRectangle x="340" y="380" width="170" height="26" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="uoEtTBrEycXN89cAWjEX-44" value="&lt;i&gt;Attributs&lt;/i&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fillColor=#d5e8d4;strokeColor=#000000;fontFamily=Helvetica;fontSize=12;fontColor=#FFFFFF;fontStyle=1;" vertex="1" parent="zkfFHV4jXpPFQw0GAbJ--13">
+        <mxCell id="uoEtTBrEycXN89cAWjEX-44" value="&lt;i&gt;Attributs&lt;/i&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fillColor=#d5e8d4;strokeColor=#000000;fontFamily=Helvetica;fontSize=12;fontColor=#000000;fontStyle=0;" vertex="1" parent="zkfFHV4jXpPFQw0GAbJ--13">
           <mxGeometry y="26" width="200" height="24" as="geometry" />
         </mxCell>
         <mxCell id="zkfFHV4jXpPFQw0GAbJ--14" value="- id : UUID4" style="text;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontFamily=Helvetica;fontSize=12;fontColor=#000000;fontStyle=0;" parent="zkfFHV4jXpPFQw0GAbJ--13" vertex="1">
