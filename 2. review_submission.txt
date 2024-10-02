@@ -1,0 +1,14 @@
+sequenceDiagram
+    participant User
+    participant API
+    participant BusinessLogic
+    participant Database
+
+    User->>API: Submit Review
+    API->>BusinessLogic: Validate Review data
+    BusinessLogic->>Database: Check if Place exists in data
+    Database-->>BusinessLogic: Place founded
+    BusinessLogic->>Database: Save Review in data
+    Database-->>BusinessLogic: Confirm save
+    BusinessLogic-->>API: Return Success
+    API-->>User: Review Submitted successfully
