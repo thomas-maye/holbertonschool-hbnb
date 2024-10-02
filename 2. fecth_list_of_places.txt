@@ -1,0 +1,12 @@
+sequenceDiagram
+    participant User
+    participant API
+    participant BusinessLogic
+    participant Database
+
+    User->>API: Fetch List of Places
+    API->>BusinessLogic: Process Filters (Criterias)
+    BusinessLogic->>Database: Query for Places that match Criterias
+    Database-->>BusinessLogic: Return list of Places
+    BusinessLogic-->>API: Send list of Places
+    API-->>User: Display list of Places
