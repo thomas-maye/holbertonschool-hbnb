@@ -21,6 +21,6 @@ pip install -r requirements.txt
 Clone the repository :
 
 ```bash
-   git clone <repository-url>
+   git clone https://github.com/thomas-maye/holbertonschool-hbnb.git
    cd hbnb
 ```
