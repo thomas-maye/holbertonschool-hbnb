@@ -15,10 +15,6 @@ class Users(BaseModel):
         self.places = []  # List to store related Places
         self.reviews = []  # List to store related reviews
 
-    def add_review(self, review):  # Need to know how to link this with place before (WIP)
-        """Add a review from a places to the places owner."""
-        self.reviews.append(review)
-
     def add_place(self, place):
         """Add a places to the places."""
         self.places.append(place)
