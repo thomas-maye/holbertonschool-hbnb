@@ -1,5 +1,6 @@
 from base_model import BaseModel
 
+
 class Place(BaseModel):
     """Place class that inherits from BaseModel."""
     def __init__(self, title, description, price, latitude, longitude, owner):
