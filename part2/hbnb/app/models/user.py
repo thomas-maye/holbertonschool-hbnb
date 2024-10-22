@@ -7,7 +7,15 @@ class User(BaseModel):
     """Users class based on BaseModel class"""
 
     def __init__(self, first_name, last_name, email, is_admin):
-        """Constructor for Users class"""
+        """
+        Constructor for Users class
+
+        Args:
+            first_name (string): First name of the user
+            last_name (string): Last name of the user
+            email (string): Email address of the user
+            is_admin (bool): Flag to check if the user has admin privileges
+        """
         super().__init__()
         self.first_name = first_name
         self.last_name = last_name
@@ -59,21 +67,20 @@ class User(BaseModel):
 
     @email.setter
     def email(self, value):
+        """
+        Sets the email address for the user after validating and
+        normalizing it.
 
+        Args:
+            value (str): The email address to set.
+
+        Raises:
+            EmailNotValidError: If the provided email is invalid.
+        """
         email = value
 
         try:
-
-            # Check that the email address is valid.
-            # Turn on check_deliverability
-            # for first-time validations like on account
-            # creation pages (but not
-            # login pages).
             emailinfo = validate_email(email, check_deliverability=False)
-
-            # After this point, use only the normalized form
-            # of the email address,
-            # especially before going to a database query.
             email = emailinfo.normalized
 
         except EmailNotValidError as e:
@@ -91,9 +98,6 @@ class User(BaseModel):
     @is_admin.setter
     def is_admin(self, value):
 
-        try:
-            if type(value) is bool:
-                self.__is_admin = value
-
-        except TypeError:
-            raise ("is_admin must be a bool")
+        if not isinstance(value, bool):
+            raise TypeError("is_admin mut be a boolean")
+        self.__is_admin = value
