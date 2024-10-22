@@ -6,7 +6,7 @@ from email_validator import validate_email, EmailNotValidError
 class User(BaseModel):
     """Users class based on BaseModel class"""
 
-    def __init__(self, first_name, last_name, email, is_admin):
+    def __init__(self, first_name, last_name, email, is_admin=False):
         """
         Constructor for Users class
 
@@ -99,5 +99,5 @@ class User(BaseModel):
     def is_admin(self, value):
 
         if not isinstance(value, bool):
-            raise TypeError("is_admin mut be a boolean")
+            raise TypeError("is_admin must be a boolean")
         self.__is_admin = value
