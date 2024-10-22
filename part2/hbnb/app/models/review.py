@@ -1,5 +1,4 @@
 from base_model import BaseModel
-import uuid
 """Review module for our HBnB project.
 
 This module contains the Review class, which defines reviews for places
@@ -42,7 +41,7 @@ class Review(BaseModel):
 
     @user.setter
     def user(self, value):
-        if not isinstance(value, uuid.uuid4):
+        if not isinstance(value, str):
             raise TypeError("User id must uuid4")
         else:
             self.__user = value
@@ -53,7 +52,7 @@ class Review(BaseModel):
 
     @place.setter
     def place(self, value):
-        if not isinstance(value, uuid.uuid4):
+        if not isinstance(value, str):
             raise TypeError("Place id must uuid4")
         else:
             self.__place = value
