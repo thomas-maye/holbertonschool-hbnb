@@ -1,4 +1,6 @@
 from base_model import BaseModel
+from place import Place
+from user import User
 """Review module for our HBnB project.
 
 This module contains the Review class, which defines reviews for places
@@ -41,8 +43,8 @@ class Review(BaseModel):
 
     @user.setter
     def user(self, value):
-        if not isinstance(value, str):
-            raise TypeError("User id must uuid4")
+        if not isinstance(value, User):
+            raise TypeError("user must be an instance of User")
         else:
             self.__user = value
 
@@ -52,7 +54,7 @@ class Review(BaseModel):
 
     @place.setter
     def place(self, value):
-        if not isinstance(value, str):
-            raise TypeError("Place id must uuid4")
+        if not isinstance(value, Place):
+            raise TypeError("place must be an instance of Place")
         else:
             self.__place = value
