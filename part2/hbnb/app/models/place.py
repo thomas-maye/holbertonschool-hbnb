@@ -3,10 +3,12 @@ from base_model import BaseModel
 
 class Place(BaseModel):
     """Place class that inherits from BaseModel."""
-    def __init__(self, title, description, price, latitude, longitude, owner):
+
+    def __init__(self, title, price, latitude, longitude, owner,
+                 description=None):
         super().__init__()
         self._title = title
-        self._description = description
+        self._description = description if description else ""
         self._price = price
         self._latitude = latitude
         self._longitude = longitude
