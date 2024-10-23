@@ -1,6 +1,7 @@
-git part2/hbnb/app/__pycache__/__init__.cpython-313.pyc
-part2/hbnb/app/models/__pycache__/amenity.cpython-313.pyc
-part2/hbnb/app/models/__pycache__/base_model.cpython-313.pyc
-part2/hbnb/app/models/__pycache__/place.cpython-313.pyc
-part2/hbnb/app/models/__pycache__/review.cpython-313.pyc
-part2/hbnb/app/models/__pycache__/user.cpython-313.pyc
+part2/hbnb/app/models/__pycache__/*.pyc
+part2/hbnb/app/services/__pycache__/*.pyc
+part2/hbnb/app/persistence/__pycache__/*.pyc
+part2/hbnb/app/api/v1/__pycache__/*.pyc
+part2/hbnb/app/api/__pycache__/*.pyc
+part2/hbnb/app/__pycache__/*.pyc
+part2/hbnb/app/__pycache__/

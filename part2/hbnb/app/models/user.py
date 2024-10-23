@@ -1,4 +1,4 @@
-from base_model import BaseModel
+from app.models.base_model import BaseModel
 from email_validator import validate_email, EmailNotValidError
 """Module Define Users class """
 

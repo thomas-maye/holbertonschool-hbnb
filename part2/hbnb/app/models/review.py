@@ -1,6 +1,6 @@
-from base_model import BaseModel
-from place import Place
-from user import User
+from app.models.base_model import BaseModel
+from app.models.place import Place
+from app.models.user import User
 """Review module for our HBnB project.
 
 This module contains the Review class, which defines reviews for places
