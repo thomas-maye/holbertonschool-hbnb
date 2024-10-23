@@ -4,7 +4,7 @@ from app.models.base_model import BaseModel
 class Place(BaseModel):
     """Place class that inherits from BaseModel."""
 
-    def __init__(self, title, price, latitude, longitude, owner,
+    def __init__(self, title, price, latitude, longitude, owner_id,
                  description=None):
         super().__init__()
         self._title = title
@@ -12,7 +12,7 @@ class Place(BaseModel):
         self._price = price
         self._latitude = latitude
         self._longitude = longitude
-        self._owner = owner
+        self._owner_id = owner_id
         self.reviews = []  # List to store related reviews
         self.amenities = []  # List to store related amenities
         self.validate()
@@ -76,14 +76,14 @@ class Place(BaseModel):
         self._longitude = value
 
     @property
-    def owner(self):
+    def owner_id(self):
         """Getter method for owner attribute."""
-        return self._owner
+        return self._owner_id
 
-    @owner.setter
+    @owner_id.setter
     def owner(self, value):
         """Setter method for owner attribute"""
-        self._owner = value
+        self._owner_id = value
 
     def validate(self):
         """Validate the attributes of the place."""
@@ -99,3 +99,20 @@ class Place(BaseModel):
     def add_amenity(self, amenity):
         """Add an amenity to the place."""
         self.amenities.append(amenity)
+
+    def update(self, place_data):
+        """Update the place attributes based on the provided data."""
+        if 'title' in place_data:
+            self.title = place_data['title']
+        if 'description' in place_data:
+            self.description = place_data['description']
+        if 'price' in place_data:
+            self.price = place_data['price']
+        if 'latitude' in place_data:
+            self.latitude = place_data['latitude']
+        if 'longitude' in place_data:
+            self.longitude = place_data['longitude']
+        if 'owner_id' in place_data:
+            self.owner_id = place_data['owner_id']
+        self.validate()
+

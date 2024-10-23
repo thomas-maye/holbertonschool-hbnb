@@ -1,16 +1,14 @@
 from app.persistence.repository import InMemoryRepository
 from app.models.place import Place
 
-
 class HBnBFacade:
     def __init__(self, place_repo=None, user_repo=None, amenity_repo=None):
         self.place_repo = InMemoryRepository()  # Repository for places
         self.user_repo = InMemoryRepository()   # Repository for users
         self.amenity_repo = InMemoryRepository()  # Repository for amenities
 
-
-    def create_place(self, place_data):
-        # Validate attributes
+    def validate_place_data(self, place_data):
+        """Validate the place data."""
         if 'price' in place_data:
             price = place_data['price']
             if price < 0:
@@ -25,8 +23,24 @@ class HBnBFacade:
             longitude = place_data['longitude']
             if not (-180 <= longitude <= 180):
                 raise ValueError("Longitude must be between -180 and 180.")
+        
+        owner_id = place_data.get('owner_id')
+        if not self.user_repo.get(owner_id):
+            raise ValueError("Invalid owner_id. User does not exist.")
 
-        place = Place(**place_data)
+    def create_place(self, place_data):
+        self.validate_place_data(place_data)  # Validate attributes
+        
+        place_attrs = {
+            'title': place_data['title'],
+            'price': place_data['price'],
+            'latitude': place_data['latitude'],
+            'longitude': place_data['longitude'],
+            'owner_id': place_data['owner_id'],
+            'description': place_data.get('description', "")
+        }
+
+        place = Place(**place_attrs)
         self.place_repo.add(place)
         return place
 
@@ -43,27 +57,9 @@ class HBnBFacade:
         return self.place_repo.get_all()
 
     def update_place(self, place_id, place_data):
+        self.validate_place_data(place_data)  # Validate data before updating
         place = self.place_repo.get(place_id)
         if place:
-            # Update attributes and validate as needed
-            if 'price' in place_data:
-                price = place_data['price']
-                if price < 0:
-                    raise ValueError("Price must be a non-negative float.")
-                place.price = price
-            
-            if 'latitude' in place_data:
-                latitude = place_data['latitude']
-                if not (-90 <= latitude <= 90):
-                    raise ValueError("Latitude must be between -90 and 90.")
-                place.latitude = latitude
-            
-            if 'longitude' in place_data:
-                longitude = place_data['longitude']
-                if not (-180 <= longitude <= 180):
-                    raise ValueError("Longitude must be between -180 and 180.")
-                place.longitude = longitude
-
-            place.update(place_data)  # Assuming the Place class has an update method
+            place.update(place_data)  # Update the place attributes
             return place
         return None
