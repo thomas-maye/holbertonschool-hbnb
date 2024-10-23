@@ -115,4 +115,3 @@ class Place(BaseModel):
         if 'owner_id' in place_data:
             self.owner_id = place_data['owner_id']
         self.validate()
-
