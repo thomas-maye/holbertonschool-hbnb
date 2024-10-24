@@ -84,34 +84,27 @@ class HBnBFacade:
         return None
 
     def create_amenity(self, amenity_data):
-        name = amenity_data.get('name')
-
-        if not name:
-            raise ValueError('Amenity name is required')
-
-        new_amenity = Amenity(id=str(uuid.uuid4()),
-                                  name=name)
-        self.amenity_repo.add(new_amenity)
-        return new_amenity
-
-    def get_amenity(self, amenity_id):
-        amenity = self.amenity_repo.get_by_id(amenity_id)
-        if not amenity:
-            raise ValueError('Amenity not found')
+        amenity = Amenity(**amenity_data)
+        self.amenity_repo.add(amenity)
         return amenity
 
 
-    def get_all_amenities(self):
-        return self.amenity_repo.get_all()
+    def get_amenity(self, amenity_id):
+        return self.amenity_repo.get(amenity_id)
 
+    def get_all_amenities(self):
+        amenities = self.amenity_repo.get_all()
+        for amenity in amenities:
+            for key, value in amenity.__dict__.items():
+                if isinstance(value, list):
+                    amenity.__dict__[key] = value
+        return amenities
 
     def update_amenity(self, amenity_id, amenity_data):
-        amenity = self.amenity_repo.get_by_id(amenity_id)
+        amenity = self.get_amenity(amenity_id)
+
         if not amenity:
-            raise ValueError('Amenity not found')
+            return {"error": "Amenity not found"}, 404
 
-        if 'name' in amenity_data:
-            amenity.name = amenity_data['name']
-
-        self.amenity_repo.update(amenity)
+        self.amenity_repo.update(amenity_id, amenity_data)
         return amenity
