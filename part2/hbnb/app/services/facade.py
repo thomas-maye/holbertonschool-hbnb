@@ -84,14 +84,13 @@ class HBnBFacade:
         return None
 
     def create_amenity(self, amenity_data):
-        title = amenity_data.get('title')
-        description = amenity_data.get('description')
+        name = amenity_data.get('name')
 
-        if not title:
-            raise ValueError('Amenity title is required')
+        if not name:
+            raise ValueError('Amenity name is required')
 
             new_amenity = Amenity(id=str(uuid.uuid4()),
-                                  title=title, description=description)
+                                  name=name)
             self.amenity_repo.add(new_amenity)
             return new_amenity
 
@@ -111,11 +110,8 @@ def update_amenity(self, amenity_id, amenity_data):
     if not amenity:
         raise ValueError('Amenity not found')
 
-        if 'title' in amenity_data:
-            amenity.title = amenity_data['title']
-
-        if 'description' in amenity_data:
-            amenity.description = amenity_data['description']
+        if 'name' in amenity_data:
+            amenity.name = amenity_data['name']
 
         self.amenity_repo.update(amenity)
         return amenity
