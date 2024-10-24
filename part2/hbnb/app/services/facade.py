@@ -1,6 +1,8 @@
 from app.persistence.repository import InMemoryRepository
 from app.models.user import User
 from app.models.place import Place
+from app.models.amenity import Amenity
+import uuid
 
 
 class HBnBFacade:
@@ -22,6 +24,7 @@ class HBnBFacade:
 
     def get_all_users(self):
         return self.user_repo.get_all()
+
     def validate_place_data(self, place_data):
         """Validate the place data."""
         if 'price' in place_data:
@@ -79,3 +82,40 @@ class HBnBFacade:
             place.update(place_data)  # Update the place attributes
             return place
         return None
+
+    def create_amenity(self, amenity_data):
+        title = amenity_data.get('title')
+        description = amenity_data.get('description')
+
+        if not title:
+            raise ValueError('Amenity title is required')
+
+            new_amenity = Amenity(id=str(uuid.uuid4()),
+                                  title=title, description=description)
+            self.amenity_repo.add(new_amenity)
+            return new_amenity
+
+    def get_amenity(self, amenity_id):
+        amenity = self.amenity_repo.get_by_id(amenity_id)
+        if not amenity:
+            raise ValueError('Amenity not found')
+        return amenity
+
+
+def get_all_amenities(self):
+    return self.amenity_repo.get_all()
+
+
+def update_amenity(self, amenity_id, amenity_data):
+    amenity = self.amenity_repo.get_by_id(amenity_id)
+    if not amenity:
+        raise ValueError('Amenity not found')
+
+        if 'title' in amenity_data:
+            amenity.title = amenity_data['title']
+
+        if 'description' in amenity_data:
+            amenity.description = amenity_data['description']
+
+        self.amenity_repo.update(amenity)
+        return amenity
