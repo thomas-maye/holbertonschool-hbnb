@@ -73,15 +73,17 @@ class HBnBFacade:
         return None
 
     def create_amenity(self, amenity_data):
+        """Create a new amenity."""
         amenity = Amenity(**amenity_data)
         self.amenity_repo.add(amenity)
         return amenity
 
-
     def get_amenity(self, amenity_id):
+        """Get an amenity by its ID."""
         return self.amenity_repo.get(amenity_id)
 
     def get_all_amenities(self):
+        """Get all amenities."""
         amenities = self.amenity_repo.get_all()
         for amenity in amenities:
             for key, value in amenity.__dict__.items():
@@ -90,6 +92,7 @@ class HBnBFacade:
         return amenities
 
     def update_amenity(self, amenity_id, amenity_data):
+        """Update an amenity."""
         amenity = self.get_amenity(amenity_id)
 
         if not amenity:
