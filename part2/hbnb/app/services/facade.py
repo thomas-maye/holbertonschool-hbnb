@@ -1,10 +1,10 @@
 from app.persistence.repository import InMemoryRepository
 from app.models.user import User
 from app.models.place import Place
-
-
-from models.review import Review
+from app.models.review import Review
 import uuid
+
+
 class HBnBFacade:
     def __init__(self, place_repo=None, user_repo=None, amenity_repo=None):
         self.place_repo = InMemoryRepository()  # Repository for places
@@ -88,8 +88,8 @@ class HBnBFacade:
     def create_review(self, review_data):
         # avant de créer la review il faut déja valider que le user et la place
         # existent
-        user = self.user_repo.get_by_id(review_data.get('user_id'))
-        place = self.place_repo.get_by_id(review_data.get('place_id'))
+        user = self.user_repo.get(review_data.get('user_id'))
+        place = self.place_repo.get(review_data.get('place_id'))
 
         if not user or not place:
             raise ValueError("Invalid user or place ID")
@@ -99,8 +99,9 @@ class HBnBFacade:
             raise ValueError("Rating must be between 1 and 5")
 
         # Créer une nouvelle instance de Review
+        review_id= str(uuid.uuid4())   # donner un ID unique a la review
         new_review = Review(
-            id=str(uuid.uuid4()),  # donner un ID unique a la review
+            id=review_id,
             text=review_data['text'],
             rating=review_data['rating'],
             user=user,
@@ -113,7 +114,7 @@ class HBnBFacade:
 
     # Method pour avoir la review par son ID
     def get_review(self, review_id):
-        review = self.review_repo.get_by_id(review_id)
+        review = self.review_repo.get(review_id)
         if not review:
             raise ValueError("Review not found")
         return review
@@ -124,33 +125,23 @@ class HBnBFacade:
 
     # Method pour afficher toutes les reviews depuis une place
     def get_reviews_by_place(self, place_id):
-        place = self.place_repo.get_by_id(place_id)
+        place = self.place_repo.get(place_id)
         if not place:
             raise ValueError("Place not found")
 
         # Récupérer toutes les reviews et filtrer par place
         return [review for review in self.review_repo.get_all() if review.place.id == place_id]
 
-    # Method pour update une review
+
     def update_review(self, review_id, review_data):
         review = self.get_review(review_id)
         if not review:
             raise ValueError("Review not found")
 
-        if 'text' in review_data:
-            review.text = review_data['text']
+        self.review_repo.update(review_id, review_data)
+        return self.get_review(review_id)
 
-        if 'rating' in review_data:
-            rating = review_data['rating']
-            if isinstance(rating, int) and 1 <= rating <= 5:
-                review.rating = rating
-            else:
-                raise ValueError("Rating must be between 1 and 5")
 
-        self.review_repo.update(review)
-        return review
-
-    # Method pour delete une review
     def delete_review(self, review_id):
         review = self.get_review(review_id)
         if not review:
