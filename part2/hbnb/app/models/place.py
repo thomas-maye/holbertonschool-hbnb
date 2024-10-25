@@ -1,107 +1,98 @@
 from app.models.base_model import BaseModel
 
-
 class Place(BaseModel):
     """Place class that inherits from BaseModel."""
 
-    def __init__(self, title, price, latitude, longitude,
-                 owner_id, description=None):
+    def __init__(self, title, price, latitude, longitude, owner_id, owner=None, description=None):
         super().__init__()
         self._title = title
         self._description = description if description else ""
         self._price = price
         self._latitude = latitude
         self._longitude = longitude
-        #self.owner = owner
         self.owner_id = owner_id
-        self.reviews = []  # List to store related reviews
-        self.amenities = []  # List to store related amenities
+        self._owner = owner  # Attribut owner
+        self.reviews = []
+        self.amenities = []
         self.validate()
 
     @property
     def title(self):
-        """Getter method for title attribute."""
+        """Title of the place."""
         return self._title
 
     @title.setter
     def title(self, value):
-        """Setter method for title attribute"""
+        """Set the title of the place."""
         if len(value) > 100:
             raise ValueError("Title exceeds maximum length")
         self._title = value
 
     @property
     def description(self):
-        """Getter method for description attribute."""
+        """Description of the place."""
         return self._description
 
     @description.setter
     def description(self, value):
-        """Setter method for description attribute"""
+        """Set the description of the place."""
         self._description = value
 
     @property
     def price(self):
-        """Getter method for price attribute."""
+        """Price of the place."""
         return self._price
 
     @price.setter
     def price(self, value):
-        """Setter method for price attribute"""
+        """Set the price of the place."""
         if value <= 0:
             raise ValueError("Price must be positive")
         self._price = value
 
     @property
     def latitude(self):
-        """Getter method for latitude attribute."""
+        """Latitude of the place."""
         return self._latitude
 
     @latitude.setter
     def latitude(self, value):
-        """Setter method for latitude attribute"""
+        """Set the latitude of the place."""
         if not (-90 <= value <= 90):
             raise ValueError("Latitude must be between -90 and 90")
         self._latitude = value
 
     @property
     def longitude(self):
-        """Getter method for longitude attribute."""
+        """Longitude of the place."""
         return self._longitude
 
     @longitude.setter
     def longitude(self, value):
-        """Setter method for longitude attribute"""
+        """Set the longitude of the place."""
         if not (-180 <= value <= 180):
             raise ValueError("Longitude must be between -180 and 180")
         self._longitude = value
-    
+
     @property
     def owner_id(self):
-        #Getter method for owner attribute.
+        """ID of the owner of the place."""
         return self._owner_id
 
     @owner_id.setter
     def owner_id(self, value):
-       #Setter method for owner attribute
+        """Set the ID of the owner of the place."""
+        if not value:
+            raise ValueError("Owner ID cannot be None or empty")
         self._owner_id = value
-          
-    """@property
-    def owner(self):
-       # Getter method for owner attribute
-        return self._owner
-    
-    @owner.setter
-    def owner(self, value):
-        #Setter method for owner attribute
-        self._owner = value"""
-    
+
     def validate(self):
         """Validate the attributes of the place."""
         self.title = self._title
         self.price = self._price
         self.latitude = self._latitude
         self.longitude = self._longitude
+        self.owner_id = self._owner_id  # Validation de owner_id
 
     def add_review(self, review):
         """Add a review to the place."""

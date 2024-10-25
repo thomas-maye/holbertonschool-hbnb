@@ -68,30 +68,29 @@ class PlaceList(Resource):
                 } for place in places], 200
 
 
-@api.route('/<string:place_id>')
+@api.route('<place_id>')
 class PlaceResource(Resource):
     @api.response(200, 'Success')
     @api.response(404, 'Place not found')
     def get(self, place_id):
         """Fetch a place by its ID"""
         
+        # Get the place data
         place_data = facade.get_place(place_id)
-
-        owner_id = place_data.owner_id
-        print(f"owner_id: {owner_id}")
-        
-        if owner_id is None:
-            raise ValueError("Owner ID can't be None")
-
-        owner_data = facade.get_user(owner_id)
-        print(f"owner_data : {owner_data}")
-        
-        if owner_data is None:
-            raise ValueError("Owner data can't be None")
-
         if not place_data:
             return {'error': 'Place not found'}, 404
 
+        # Verify that the owner ID is present
+        owner_id = place_data.owner_id
+        if owner_id is None:
+            return {'error': "Owner ID is missing in place data"}, 400
+
+        # Get the owner data
+        owner_data = facade.get_user(owner_id)
+        if owner_data is None:
+            return {'error': "Owner not found for the provided Owner ID"}, 404
+
+        # Return the place data along with the owner data
         return {
             'id': place_data.id,
             'title': place_data.title,
@@ -113,12 +112,25 @@ class PlaceResource(Resource):
     @api.response(400, 'Invalid input data')
     def put(self, place_id):
         """Update a place by its ID"""
+        
+        # Get the place data
         place_data = api.payload
         try:
+            # Update the place data
             updated_place = facade.update_place(place_id, place_data)
             if updated_place:
-                return {'id': updated_place.id,
-                        'title': updated_place.title}, 200
+                return {
+                    'id': updated_place.id,
+                    'title': updated_place.title,
+                    'description': updated_place.description,
+                    'price': updated_place.price,
+                    'latitude': updated_place.latitude,
+                    'longitude': updated_place.longitude,
+                }, 200
+            
+            # Return an error if the place is not found
             return {'error': 'Place not found'}, 404
+        
         except ValueError as e:
+            # Return an error if the input data is invalid
             return {'error': str(e)}, 400
