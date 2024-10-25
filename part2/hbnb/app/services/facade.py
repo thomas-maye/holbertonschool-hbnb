@@ -22,8 +22,10 @@ class HBnBFacade:
 
     def get_all_users(self):
         return self.user_repo.get_all()
+    
     def validate_place_data(self, place_data):
-        """Validate the place data."""
+        #Validate the place data.
+        
         if 'price' in place_data:
             price = place_data['price']
             if price < 0:
@@ -39,23 +41,17 @@ class HBnBFacade:
             if not (-180 <= longitude <= 180):
                 raise ValueError("Longitude must be between -180 and 180.")
 
-        owner_id = place_data.get('owner_id')
+        """owner_id = self.user_repo.get('owner_id')
+        
         if not self.user_repo.get(owner_id):
-            raise ValueError("Invalid owner_id. User does not exist.")
+            raise ValueError("Invalid owner_id. User does not exist.")"""
 
     def create_place(self, place_data):
-        self.validate_place_data(place_data)  # Validate attributes
+        
+        
+        self.validate_place_data(place_data)
 
-        place_attrs = {
-            'title': place_data['title'],
-            'price': place_data['price'],
-            'latitude': place_data['latitude'],
-            'longitude': place_data['longitude'],
-            'owner_id': place_data['owner_id'],
-            'description': place_data.get('description', "")
-        }
-
-        place = Place(**place_attrs)
+        place = Place(**place_data)
         self.place_repo.add(place)
         return place
 

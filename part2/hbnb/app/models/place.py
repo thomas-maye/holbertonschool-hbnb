@@ -4,15 +4,16 @@ from app.models.base_model import BaseModel
 class Place(BaseModel):
     """Place class that inherits from BaseModel."""
 
-    def __init__(self, title, price, latitude, longitude, owner_id,
-                 description=None):
+    def __init__(self, title, price, latitude, longitude,
+                 owner_id, description=None):
         super().__init__()
         self._title = title
         self._description = description if description else ""
         self._price = price
         self._latitude = latitude
         self._longitude = longitude
-        self._owner_id = owner_id
+        #self.owner = owner
+        self.owner_id = owner_id
         self.reviews = []  # List to store related reviews
         self.amenities = []  # List to store related amenities
         self.validate()
@@ -74,17 +75,27 @@ class Place(BaseModel):
         if not (-180 <= value <= 180):
             raise ValueError("Longitude must be between -180 and 180")
         self._longitude = value
-
+    
     @property
     def owner_id(self):
-        """Getter method for owner attribute."""
+        #Getter method for owner attribute.
         return self._owner_id
 
     @owner_id.setter
-    def owner(self, value):
-        """Setter method for owner attribute"""
+    def owner_id(self, value):
+       #Setter method for owner attribute
         self._owner_id = value
-
+          
+    """@property
+    def owner(self):
+       # Getter method for owner attribute
+        return self._owner
+    
+    @owner.setter
+    def owner(self, value):
+        #Setter method for owner attribute
+        self._owner = value"""
+    
     def validate(self):
         """Validate the attributes of the place."""
         self.title = self._title
