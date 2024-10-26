@@ -26,7 +26,6 @@ place_model = api.model('Place', {
     'longitude': fields.Float(
         required=True, description='Longitude of the place'),
     'owner_id': fields.String(required=True, description='ID of the owner'),
-    'owner': fields.Nested(user_model, description='Owner data')
 })
 
 
@@ -49,7 +48,6 @@ class PlaceList(Resource):
                 "longitude": new_place.longitude,
                 "owner_id": new_place.owner_id
             }, 201
-
         except ValueError as e:
             return {'error': str(e)}, 400
 
@@ -65,16 +63,17 @@ class PlaceList(Resource):
                 "price": place.price,
                 "latitude": place.latitude,
                 "longitude": place.longitude,
+                "owner_id": place.owner_id,
                 } for place in places], 200
 
 
-@api.route('<place_id>')
+@api.route('/<place_id>')
 class PlaceResource(Resource):
     @api.response(200, 'Success')
     @api.response(404, 'Place not found')
     def get(self, place_id):
         """Fetch a place by its ID"""
-        
+
         # Get the place data
         place_data = facade.get_place(place_id)
         if not place_data:
@@ -90,6 +89,18 @@ class PlaceResource(Resource):
         if owner_data is None:
             return {'error': "Owner not found for the provided Owner ID"}, 404
 
+        # Get the amenities data
+        # TODO: Implement get_amenities method in facade,
+        # and uncomment the following line to fetch amenities
+        # Exemple : amenities_data = facade.get_amenities(place_id)
+        amenities_data = []
+
+        # Get the reviews data
+        # TODO: Implement get_reviews method in facade,
+        # and uncomment the following line to fetch reviews
+        # Exemple : reviews_data = facade.get_reviews(place_id)
+        reviews_data = []
+
         # Return the place data along with the owner data
         return {
             'id': place_data.id,
@@ -99,11 +110,22 @@ class PlaceResource(Resource):
             'latitude': place_data.latitude,
             'longitude': place_data.longitude,
             'owner': {
-                'id': owner_id,
+                'id': owner_data.id,
                 'first_name': owner_data.first_name,
                 'last_name': owner_data.last_name,
                 'email': owner_data.email
             },
+            'amenities': [{
+                'id': amenity.id,
+                'name': amenity.name
+            } for amenity in amenities_data
+            ],
+            'reviews': [{
+                'id': review.id,
+                'content': review.content,
+                'rating': review.rating
+            } for review in reviews_data
+            ]
         }, 200
 
     @api.expect(place_model)
@@ -112,7 +134,7 @@ class PlaceResource(Resource):
     @api.response(400, 'Invalid input data')
     def put(self, place_id):
         """Update a place by its ID"""
-        
+
         # Get the place data
         place_data = api.payload
         try:
@@ -127,10 +149,10 @@ class PlaceResource(Resource):
                     'latitude': updated_place.latitude,
                     'longitude': updated_place.longitude,
                 }, 200
-            
+
             # Return an error if the place is not found
             return {'error': 'Place not found'}, 404
-        
+
         except ValueError as e:
             # Return an error if the input data is invalid
             return {'error': str(e)}, 400
