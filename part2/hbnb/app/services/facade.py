@@ -1,11 +1,8 @@
 from app.persistence.repository import InMemoryRepository
 from app.models.user import User
 from app.models.place import Place
-<<<<<<< HEAD
 from app.models.amenity import Amenity
-=======
 from app.models.review import Review
->>>>>>> Reviewsendpoint
 import uuid
 
 
@@ -86,7 +83,6 @@ class HBnBFacade:
             place.update(place_data)  # Update the place attributes
             return place
         return None
-<<<<<<< HEAD
 
     def create_amenity(self, amenity_data):
         """Create a new amenity."""
@@ -116,7 +112,6 @@ class HBnBFacade:
 
         self.amenity_repo.update(amenity_id, amenity_data)
         return amenity
-=======
         # Logic will be implemented in later tasks
         pass
 
@@ -185,4 +180,3 @@ class HBnBFacade:
 
         self.review_repo.delete(review_id)
         return review
->>>>>>> Reviewsendpoint
