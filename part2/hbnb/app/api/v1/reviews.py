@@ -11,7 +11,6 @@ review_model = api.model('Review', {
     'place_id': fields.String(required=True, description='ID of the place')
 })
 
-
 @api.route('/')
 class ReviewList(Resource):
     @api.expect(review_model)
@@ -21,7 +20,14 @@ class ReviewList(Resource):
         """Register a new review"""
         try:
             new_review = facade.create_review(api.payload)
-            return new_review.__dict__, 201
+            return {
+                'id': new_review.id,
+                'text': new_review.text,
+                'rating': new_review.rating,
+                'user_id': new_review.user.id,
+                'place_id': new_review.place.id
+            }, 201
+
         except ValueError as e:
             return {'message': str(e)},
 
@@ -30,7 +36,11 @@ class ReviewList(Resource):
     def get(self):
         """Retrieve a list of all reviews"""
         reviews = facade.get_all_reviews()
-        return [review.__dict__ for review in reviews], 200
+        return [{
+            'id': review.id,
+            'text': review.text,
+            'rating': review.rating,
+        } for review in reviews], 200
 
 
 @api.route('/<review_id>')
@@ -41,7 +51,13 @@ class ReviewResource(Resource):
         """Get review details by ID"""
         review = facade.get_review(review_id)
         if review:
-            return review.__dict__, 200
+            return {
+                'id': review.id,
+                'text': review.text,
+                'rating': review.rating,
+                'user_id': review.user.id,
+                'place_id': review.place.id
+            }
         return {'message' : 'Review not found'}, 404
 
 
@@ -67,15 +83,3 @@ class ReviewResource(Resource):
         if deleted_review:
             return {'message': 'Review deleted successfully'}, 200
         return {'message': 'Review not found'}, 404
-
-
-@api.route('/places/<place_id>/reviews')
-class PlaceReviewList(Resource):
-    @api.response(200, 'List of reviews for the place retrieved successfully')
-    @api.response(404, 'Place not found')
-    def get(self, place_id):
-        """Get all reviews for a specific place"""
-        reviews = facade.get_reviews_by_place(place_id)
-        if reviews:
-            return [review.__dict__ for review in reviews], 200
-        return {'message': 'Place not found'}, 404

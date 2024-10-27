@@ -18,8 +18,7 @@ class AmenityList(Resource):
         """Register a new amenity"""
         amenity_data = api.payload
 
-        existing_amenity = facade.get_amenity(amenity_data.get('id'))
-        if existing_amenity:
+        if not amenity_data or not amenity_data.get("name"):
             return {"error": "Invalid input data"}, 400
 
         new_amenity = facade.create_amenity(amenity_data)
@@ -32,13 +31,15 @@ class AmenityList(Resource):
     @api.response(404, "No amenities found")
     def get(self):
         """Retrieve a list of all amenities"""
-
         amenities_list = facade.get_all_amenities()
 
         if not amenities_list:
             return {"message": "No amenities found"}, 404
 
-        return jsonify([amenity.__dict__ for amenity in amenities_list])
+        return [{
+            "id": amenity.id,
+            "name": amenity.name
+        } for amenity in amenities_list], 200
 
 
 @api.route('/<amenity_id>')
@@ -48,8 +49,10 @@ class AmenityResource(Resource):
     def get(self, amenity_id):
         """Get amenity details by ID"""
         amenity = facade.get_amenity(amenity_id)
+
         if not amenity:
             return {"error": "Amenity not found"}, 404
+
         return {
             "id": amenity.id,
             "name": amenity.name,
@@ -62,6 +65,11 @@ class AmenityResource(Resource):
     def put(self, amenity_id):
         """Update an amenity's information"""
         amenity_data = api.payload
+        amenity = facade.get_amenity(amenity_id)
+
+        if not amenity:
+            return {"error": "Amenity not found"}, 404
+
         if not amenity_data or not amenity_data.get("name"):
             return {"error": "Invalid input data"}, 400
 
@@ -71,4 +79,4 @@ class AmenityResource(Resource):
         return {
             "id": updated_amenity.id,
             "name": updated_amenity.name
-            }, 200
+        }, 200

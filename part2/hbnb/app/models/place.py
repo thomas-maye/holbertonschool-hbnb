@@ -1,20 +1,21 @@
 from app.models.base_model import BaseModel
+from app.models.user import User
 
 
 class Place(BaseModel):
     """Place class that inherits from BaseModel."""
 
     def __init__(self, title, description, price, latitude,
-                 longitude, owner_id, amenities):
+                 longitude, owner):
         super().__init__()
         self.title = title
         self.description = description
         self.price = price
         self.latitude = latitude
         self.longitude = longitude
-        self.owner_id = owner_id  # Attribut owner
+        self.owner = owner
         self.reviews = []
-        self.amenities = amenities
+        self.amenities = []
 
     @property
     def title(self):
@@ -75,27 +76,30 @@ class Place(BaseModel):
         self.__longitude = value
 
     @property
-    def owner_id(self):
-        """ID of the owner of the place."""
-        return self.__owner_id
+    def owner(self):
+        return self.__owner
 
-    @owner_id.setter
-    def owner_id(self, value):
-        """Set the ID of the owner of the place."""
-        if not value:
-            raise ValueError("Owner ID cannot be None or empty")
-        self.__owner_id = value
-
-    @property
-    def amenities(self):
-        """Amenities of the place."""
-        return self.__amenities
-    
-    @amenities.setter
-    def amenities(self, value):
-        """Set the amenities of the place."""
-        self.__amenities = value
+    @owner.setter
+    def owner(self, value):
+        if not isinstance(value, User):
+            raise TypeError("user must be an instance of User")
+        else:
+            self.__owner = value
 
     def add_review(self, review):
         """Add a review to the place."""
         self.reviews.append(review)
+
+    def remove_review(self, review):
+        """Remove a review from the place."""
+        if review in self.reviews:
+            self.reviews.remove(review)
+
+    def add_amenity(self, amenity):
+        """Add an amenity to the place."""
+        self.amenities.append(amenity)
+
+    def remove_amenity(self, amenity):
+        """Remove an amenity from the place."""
+        if amenity in self.amenities:
+            self.amenities.remove(amenity)

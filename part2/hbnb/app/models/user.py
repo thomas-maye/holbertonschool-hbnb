@@ -1,6 +1,7 @@
 from app.models.base_model import BaseModel
 from email_validator import validate_email, EmailNotValidError
 import re
+
 """Module Define Users class """
 
 
@@ -23,10 +24,7 @@ class User(BaseModel):
         self.email = email
         self.is_admin = is_admin
         self.places = []  # List to store related Places
-
-    def add_place(self, place):
-        """Add a places to the places."""
-        self.places.append(place)
+        self.reviews = []  # List to store related Reviews
 
     @property
     def first_name(self):
@@ -105,3 +103,11 @@ class User(BaseModel):
         if not isinstance(value, bool):
             raise TypeError("is_admin must be a boolean")
         self.__is_admin = value
+
+    def add_review(self, review):
+        """Add a review to the place."""
+        self.reviews.append(review)
+
+    def add_amenity(self, amenity):
+        """Add an amenity to the place."""
+        self.amenities.append(amenity)

@@ -38,6 +38,17 @@ class Review(BaseModel):
         self.__rating = value
 
     @property
+    def place(self):
+        return self.__place
+
+    @place.setter
+    def place(self, value):
+        if not isinstance(value, Place):
+            raise TypeError("place must be an instance of Place")
+        else:
+            self.__place = value
+
+    @property
     def user(self):
         return self.__user
 
@@ -48,13 +59,3 @@ class Review(BaseModel):
         else:
             self.__user = value
 
-    @property
-    def place(self):
-        return self.__place
-
-    @place.setter
-    def place(self, value):
-        if not isinstance(value, Place):
-            raise TypeError("place must be an instance of Place")
-        else:
-            self.__place = value
