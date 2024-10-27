@@ -9,8 +9,17 @@ in our HBnB project.
 
 
 class Review(BaseModel):
-
+    """Review class that inherits from BaseModel."""
     def __init__(self, text, rating, place, user):
+        """
+        Constructor for Review class
+
+        Args:
+            text (string): The text content of the review
+            rating (int): The rating given in the review
+            place (Place): The place or location being reviewed
+            user (User): The user who wrote the review
+        """
         super().__init__()
         self.text = text
         self.rating = rating
@@ -58,4 +67,3 @@ class Review(BaseModel):
             raise TypeError("user must be an instance of User")
         else:
             self.__user = value
-

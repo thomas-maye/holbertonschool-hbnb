@@ -7,11 +7,15 @@ api = Namespace('places', description='Place operations')
 place_model = api.model('Place', {
     'title': fields.String(required=True, description='Title of the place'),
     'description': fields.String(description='Description of the place'),
-    'price': fields.Float(required=True, description='Price per night'),
-    'latitude': fields.Float(required=True, description='Latitude of the place'),
-    'longitude': fields.Float(required=True, description='Longitude of the place'),
+    'price': fields.Float(required=True,
+                          description='Price per night'),
+    'latitude': fields.Float(required=True,
+                             description='Latitude of the place'),
+    'longitude': fields.Float(required=True,
+                              description='Longitude of the place'),
     'owner_id': fields.String(required=True, description='ID of the owner')
 })
+
 
 @api.route('/')
 class PlaceList(Resource):
@@ -103,6 +107,7 @@ class PlaceResource(Resource):
             # Return an error if the input data is invalid
             return {'error': str(e)}, 400
 
+
 @api.route('/<place_id>/amenities/<amenity_id>')
 class PlaceAmenity(Resource):
     @api.response(200, 'Amenity added to place successfully')
@@ -119,6 +124,7 @@ class PlaceAmenity(Resource):
         except ValueError as e:
             # Return an error if the place or amenity is not found
             return {'error': str(e)}, 404
+
     def delete(self, place_id, amenity_id):
         """Remove an amenity from a place"""
         try:
@@ -131,7 +137,8 @@ class PlaceAmenity(Resource):
         except ValueError as e:
             # Return an error if the place or amenity is not found
             return {'error': str(e)}, 404
-        
+
+
 @api.route('/<place_id>/reviews')
 class PlaceReviewList(Resource):
     @api.response(200, 'List of reviews for the place retrieved successfully')
