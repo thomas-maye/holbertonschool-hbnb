@@ -1,5 +1,6 @@
 from app.models.base_model import BaseModel
 from email_validator import validate_email, EmailNotValidError
+import re
 """Module Define Users class """
 
 
@@ -77,16 +78,19 @@ class User(BaseModel):
         Raises:
             EmailNotValidError: If the provided email is invalid.
         """
+
         email = value
+
+        regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+
+        if not re.match(regex, value):
+            raise EmailNotValidError("Email format not valid.")
 
         try:
             emailinfo = validate_email(email, check_deliverability=False)
             email = emailinfo.normalized
 
         except EmailNotValidError as e:
-
-            # The exception message is human-readable explanation of why it's
-            # not a valid (or deliverable) email address.
             print(str(e))
 
         self.__email = email
