@@ -89,17 +89,10 @@ class PlaceResource(Resource):
         if owner_data is None:
             return {'error': "Owner not found for the provided Owner ID"}, 404
 
-        # Get the amenities data
-        # TODO: Implement get_amenities method in facade,
-        # and uncomment the following line to fetch amenities
-        # Exemple : amenities_data = facade.get_amenities(place_id)
-        amenities_data = []
-
-        # Get the reviews data
-        # TODO: Implement get_reviews method in facade,
-        # and uncomment the following line to fetch reviews
-        # Exemple : reviews_data = facade.get_reviews(place_id)
-        reviews_data = []
+        amenities_data = facade.get_amenities(place_id)
+       
+        reviews_data = facade.get_reviews(place_id)
+        
 
         # Return the place data along with the owner data
         return {
