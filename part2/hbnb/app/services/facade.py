@@ -168,9 +168,10 @@ class HBnBFacade:
             user=user,
             place=place
         )
-
-        self.review_repo.add(new_review)
+        
         place.add_review(new_review)
+        self.review_repo.add(new_review)
+        
         return new_review
 
     def get_review(self, review_id):

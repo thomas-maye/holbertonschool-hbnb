@@ -152,4 +152,4 @@ class PlaceReviewList(Resource):
                 'text': review.text,
                 'rating': review.rating
             } for review in reviews], 200
-        return {'message': 'Place not found'}, 404
+        return {'message': 'Reviews not found'}, 404
