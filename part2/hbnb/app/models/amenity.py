@@ -5,18 +5,14 @@ class Amenity(BaseModel):
     """Amenity class that inherits from BaseModel."""
     def __init__(self, name):
         super().__init__()
-        self._name = name
-        self.validate()
+        self.name = name
 
     @property
     def name(self):
-        return self._name
+        return self.__name
 
     @name.setter
     def name(self, value):
         if len(value) > 50:
             raise ValueError("Amenity name exceeds maximum length")
-        self._name = value
-
-    def validate(self):
-        self.name = self._name
+        self.__name = value

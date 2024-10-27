@@ -26,6 +26,7 @@ place_model = api.model('Place', {
     'longitude': fields.Float(
         required=True, description='Longitude of the place'),
     'owner_id': fields.String(required=True, description='ID of the owner'),
+    'amenities': fields.List(fields.String, required=True, description="List of amenities ID's")
 })
 
 
@@ -55,15 +56,22 @@ class PlaceList(Resource):
     def get(self):
         """Retrieve a list of all places"""
         places = facade.get_all_places()
+        amenities_data = facade.get_all_amenities()
+        #reviews_data = facade.get_review(place_id)
+
 
         return [{
-                "id": place.id,
-                "title": place.title,
-                "description": place.description,
-                "price": place.price,
-                "latitude": place.latitude,
-                "longitude": place.longitude,
-                "owner_id": place.owner_id,
+                'id': place.id,
+                'title': place.title,
+                'description': place.description,
+                'price': place.price,
+                'latitude': place.latitude,
+                'longitude': place.longitude,
+                'owner_id': place.owner_id,
+                'amenities': [{
+                    'id': amenity.id,
+                    'name': amenity.name
+                } for amenity in amenities_data],
                 } for place in places], 200
 
 
@@ -89,9 +97,8 @@ class PlaceResource(Resource):
         if owner_data is None:
             return {'error': "Owner not found for the provided Owner ID"}, 404
 
-        amenities_data = facade.get_amenities(place_id)
-       
-        reviews_data = facade.get_reviews(place_id)
+        amenities_data = facade.get_amenity(place_id)
+        #reviews_data = facade.get_review(place_id)
         
 
         # Return the place data along with the owner data
@@ -111,14 +118,7 @@ class PlaceResource(Resource):
             'amenities': [{
                 'id': amenity.id,
                 'name': amenity.name
-            } for amenity in amenities_data
-            ],
-            'reviews': [{
-                'id': review.id,
-                'content': review.content,
-                'rating': review.rating
-            } for review in reviews_data
-            ]
+            } for amenity in amenities_data],
         }, 200
 
     @api.expect(place_model)

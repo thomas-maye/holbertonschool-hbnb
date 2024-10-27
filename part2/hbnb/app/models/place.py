@@ -5,7 +5,7 @@ class Place(BaseModel):
     """Place class that inherits from BaseModel."""
 
     def __init__(self, title, description, price, latitude,
-                 longitude, owner_id):
+                 longitude, owner_id, amenities):
         super().__init__()
         self.title = title
         self.description = description
@@ -14,7 +14,7 @@ class Place(BaseModel):
         self.longitude = longitude
         self.owner_id = owner_id  # Attribut owner
         self.reviews = []
-        self.amenities = []
+        self.amenities = amenities
 
     @property
     def title(self):
@@ -86,10 +86,16 @@ class Place(BaseModel):
             raise ValueError("Owner ID cannot be None or empty")
         self.__owner_id = value
 
+    @property
+    def amenities(self):
+        """Amenities of the place."""
+        return self.__amenities
+    
+    @amenities.setter
+    def amenities(self, value):
+        """Set the amenities of the place."""
+        self.__amenities = value
+
     def add_review(self, review):
         """Add a review to the place."""
         self.reviews.append(review)
-
-    def add_amenity(self, amenity):
-        """Add an amenity to the place."""
-        self.amenities.append(amenity)
