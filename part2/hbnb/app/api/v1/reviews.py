@@ -4,16 +4,21 @@ from app.services import facade
 api = Namespace('reviews', description='Review operations')
 
 # Define the review model for input validation and documentation
-review_model = api.model('Review', {
+add_review_model = api.model('AddReview', {
     'text': fields.String(required=True, description='Text of the review'),
     'rating': fields.Integer(required=True, description='Rating of the place (1-5)'),
     'user_id': fields.String(required=True, description='ID of the user'),
     'place_id': fields.String(required=True, description='ID of the place')
 })
 
+update_review_model = api.model('UpdateReview', {
+    'text': fields.String(required=True, description='Text of the review'),
+    'rating': fields.Integer(required=True, description='Rating of the place (1-5)')
+})
+
 @api.route('/')
 class ReviewList(Resource):
-    @api.expect(review_model)
+    @api.expect(add_review_model)
     @api.response(201, 'Review successfully created')
     @api.response(400, 'Invalid input data')
     def post(self):
@@ -61,7 +66,7 @@ class ReviewResource(Resource):
         return {'message' : 'Review not found'}, 404
 
 
-    @api.expect(review_model)
+    @api.expect(update_review_model)
     @api.response(200, 'Review updated successfully')
     @api.response(404, 'Review not found')
     @api.response(400, 'Invalid input data')

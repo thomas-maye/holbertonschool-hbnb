@@ -165,6 +165,7 @@ class HBnBFacade:
 
         # Save la review dans le review_repo(liste des reviews)
         self.review_repo.add(new_review)
+        place.add_review(new_review)
         return new_review
 
     # Method pour avoir la review par son ID
@@ -180,7 +181,7 @@ class HBnBFacade:
 
     # Method pour afficher toutes les reviews depuis une place
     def get_reviews_by_place(self, place_id):
-        place = self.place_repo.get(place_id)
+        place = self.get_place(place_id)
         if not place:
             raise ValueError("Review not found")
 
@@ -201,5 +202,7 @@ class HBnBFacade:
         if not review:
             raise ValueError("Review not found")
 
+        place = self.get_place(review.place.id)
+        place.remove_review(review)
         self.review_repo.delete(review_id)
         return review
