@@ -24,4 +24,5 @@ Clone the repository :
    git clone https://github.com/thomas-maye/holbertonschool-hbnb.git
    cd hbnb
 ```
-When you start the Flask serveur use for URL : http://127.0.0.1:5000/api/v1/
+
+When you start the Flask serveur use for URL : [Serveur Flask](http://127.0.0.1:5000/api/v1/)
