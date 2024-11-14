@@ -1,7 +1,7 @@
 from app.models.base_model import BaseModel
 from email_validator import validate_email, EmailNotValidError
 import re
-import bcrypt
+from app import bcrypt
 
 
 """Module Define Users class """
@@ -27,7 +27,7 @@ class User(BaseModel):
         self.is_admin = is_admin
         self.places = []  # List to store related Places
         self.reviews = []  # List to store related Reviews
-        self.__password = None
+        self.password = password
 
     @property
     def first_name(self):
@@ -117,12 +117,11 @@ class User(BaseModel):
 
     def hash_password(self, password):
         """Hashes the password before storing it."""
-        self.__password = bcrypt.generate_password_hash(
-            password).decode('utf-8')
+        return bcrypt.generate_password_hash(password).decode('utf-8')
 
     def verify_password(self, password):
         """Verifies if the provided password matches the hashed password."""
-        return bcrypt.check_password_hash(self.__password, password)
+        return bcrypt.check_password_hash(self.password, password)
 
     @property
     def password(self):
@@ -130,4 +129,4 @@ class User(BaseModel):
 
     @password.setter
     def password(self, value):
-        self.hash_password(value)
+        self.__password = self.hash_password(value)
