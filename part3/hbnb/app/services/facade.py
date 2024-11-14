@@ -111,6 +111,13 @@ class HBnBFacade:
         """Get all amenities."""
         amenities = self.amenity_repo.get_all()
         return amenities
+    
+    def get_amenities_by_place(self, place_id):
+        """Get all amenities for a place."""
+        place = self.get_place(place_id)
+        if not place:
+            raise ValueError("Aminities not found")
+        return place.amenities
 
     def add_amenity_to_place(self, place_id, amenity_id):
         place = self.get_place(place_id)
@@ -187,7 +194,6 @@ class HBnBFacade:
         place = self.get_place(place_id)
         if not place:
             raise ValueError("Review not found")
-
         return place.reviews
 
     def update_review(self, review_id, review_data):

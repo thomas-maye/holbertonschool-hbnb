@@ -146,10 +146,25 @@ class PlaceReviewList(Resource):
     def get(self, place_id):
         """Get all reviews for a specific place"""
         reviews = facade.get_reviews_by_place(place_id)
-        if not reviews:
+        if reviews:
             return [{
                 'id': review.id,
                 'text': review.text,
                 'rating': review.rating
             } for review in reviews], 200
         return {'message': 'Reviews not found'}, 404
+
+@api.route('/<place_id>/amenities')
+class PlaceAmenitiesList(Resource):
+    @api.response(200, 'List of amenities for the place retrieved successfully')
+    @api.response(404, 'Place not found')
+    def get(self, place_id):
+        """Get all amenities for a specific place"""
+        amenities = facade.get_amities_by_place(place_id)
+        if amenities:
+            return [{
+                'id': amenity.id,
+                'name': amenity.name,
+            } for amenity in amenities], 200
+        return {'message': 'Reviews not found'}, 404
+

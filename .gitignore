@@ -6,7 +6,11 @@ part2/hbnb/app/api/__pycache__/*.pyc
 part2/hbnb/app/__pycache__/*.pyc
 part2/hbnb/app/__pycache__/
 part2/hbnb/app/__pycache__/
+<<<<<<< HEAD
 part2/hbnb/envpart3hbnb/*
+=======
+part2/hbnb/envpart2hbnb/*
+>>>>>>> main
 part3/hbnb/app/models/__pycache__/*.pyc
 part3/hbnb/app/services/__pycache__/*.pyc
 part3/hbnb/app/persistence/__pycache__/*.pyc
@@ -16,4 +20,8 @@ part3/hbnb/app/__pycache__/*.pyc
 part3/hbnb/app/__pycache__/
 part3/hbnb/app/__pycache__/
 part3/hbnb/envpart3hbnb/*
+<<<<<<< HEAD
 *.pyc
+=======
+*.pyc
+>>>>>>> main
