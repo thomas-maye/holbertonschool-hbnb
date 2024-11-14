@@ -117,16 +117,16 @@ class User(BaseModel):
 
     def hash_password(self, password):
         """Hashes the password before storing it."""
-        self.password = bcrypt.generate_password_hash(password).decode('utf-8')
+        return bcrypt.generate_password_hash(password).decode('utf-8')
 
     def verify_password(self, password):
         """Verifies if the provided password matches the hashed password."""
         return bcrypt.check_password_hash(self.password, password)
-    
+
     @property
     def password(self):
         return self.__password
-    
+
     @password.setter
     def password(self, value):
-        self.__password  = self.hash_password(value)
+        self.__password = self.hash_password(value)
