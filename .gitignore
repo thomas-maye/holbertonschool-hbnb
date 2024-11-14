@@ -16,3 +16,4 @@ part3/hbnb/app/__pycache__/*.pyc
 part3/hbnb/app/__pycache__/
 part3/hbnb/app/__pycache__/
 part3/hbnb/envpart3hbnb/*
+*.pyc
