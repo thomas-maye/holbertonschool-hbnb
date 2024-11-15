@@ -33,12 +33,14 @@ class UserList(Resource):
 
         new_user = facade.create_user(user_data)
 
-        return new_user.id, 201
+        return {'id': new_user.id, 'message': 'User successfully created'}, 201
 
     @api.response(200, "User list retrieve")
     def get(self):
         """Retrieve a list of users"""
         users = facade.get_all_users()
+        if not users:
+            return {'error': 'No users found'}, 404
 
         return [{
             'id': user.id,
