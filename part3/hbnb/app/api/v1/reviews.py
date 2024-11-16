@@ -110,7 +110,7 @@ class ReviewResource(Resource):
             return {'message': 'Review not found'}, 404
         
         if review.user.id != current_user['id']:
-            return {'message': 'You are not authorized to update this review'}, 403
+            return {'message': 'Unauthorized action.'}, 403
 
         try:
             updated_review = facade.update_review(review_id, api.payload)
@@ -120,10 +120,22 @@ class ReviewResource(Resource):
         except ValueError as e:
             return {'message': str(e)}, 400
 
+    @jwt_required()
     @api.response(200, 'Review deleted successfully')
     @api.response(404, 'Review not found')
+    @api.doc(security='token')
     def delete(self, review_id):
         """Delete a review"""
+        # Retrieve the current user from the JWT token
+        current_user = get_jwt_identity()
+
+        review = facade.get_review(review_id)
+        if not review:
+            return {'message': 'Review not found'}, 404
+        
+        if review.user.id != current_user['id']:
+            return {'message': 'Unauthorized action.'}, 403
+
         deleted_review = facade.delete_review(review_id)
         if deleted_review:
             return {'message': 'Review deleted successfully'}, 200
