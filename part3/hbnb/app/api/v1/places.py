@@ -90,7 +90,6 @@ class PlaceResource(Resource):
             } for amenity in place_data.amenities],
         }, 200
 
-# EN COURS
     @jwt_required()
     @api.expect(place_model)
     @api.response(200, 'Place successfully updated')
@@ -99,14 +98,18 @@ class PlaceResource(Resource):
     @api.doc(security='token')
     def put(self, place_id):
         """Update a place by its ID"""
-        # Get the place data
+        # Retrieve the current user's from the JWT token
         current_user = get_jwt_identity()
+
+        place = facade.get_place(place_id)
         
-        if place_data['owner_id'] != current_user['id']:
+        if place.owner.id != current_user['id']:
             return {'error': 'Unauthorized action'}, 403
 
         try:
             # Update the place data
+            place_data = api.payload
+            place_data['owner_id'] = current_user['id']
             updated_place = facade.update_place(place_id, place_data)
             if updated_place:
                 return {
@@ -119,12 +122,6 @@ class PlaceResource(Resource):
         except ValueError as e:
             # Return an error if the input data is invalid
             return {'error': str(e)}, 400
-
-    @api.response(200, 'Place details retrieved successfully')
-    def get(self, place_id):
-        """Retrieve detailed information about a specific place"""
-        place = facade.get_place(place_id)
-        return place.to_dict(), 200
 
 
 @api.route('/<place_id>/amenities/<amenity_id>')
