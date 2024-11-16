@@ -16,18 +16,25 @@ class HBnBFacade:
         user1 = self.create_user({
             'first_name': 'Thomas',
             'last_name': 'Mayé',
-            'email': 'maye@mail.com',
+            'email': 'thomas@mail.com',
             'password': 'thomaspass',
         })
 
         user2 = self.create_user({
             'first_name': 'Camille',
-            'last_name': 'Inconnu',
+            'last_name': 'Lemec',
             'email': 'camille@mail.com',
             'password': 'camillepass',
         })
 
-        self.create_place({
+        user3 = self.create_user({
+            'first_name': 'Ori',
+            'last_name': 'The dog',
+            'email': 'ori@mail.com',
+            'password': 'oripass',
+        })
+
+        place1 = self.create_place({
             'title': 'Maison en bretagne',
             'description': 'A nice place',
             'price': 100,
@@ -36,13 +43,41 @@ class HBnBFacade:
             'owner_id': user1.id
         })
 
-        self.create_place({
+        place2 = self.create_place({
             'title': 'Tiny House',
             'description': 'Another nice place',
             'price': 200,
             'latitude': 48.8566,
             'longitude': 2.3522,
             'owner_id': user2.id
+        })
+
+        self.create_review({
+            'text': 'Great place',
+            'rating': 5,
+            'user_id': user3.id,
+            'place_id': place1.id
+        })
+
+        self.create_review({
+            'text': 'Nice place',
+            'rating': 4,
+            'user_id': user2.id,
+            'place_id': place1.id
+        })
+
+        self.create_review({
+            'text': 'Bad place',
+            'rating': 1,
+            'user_id': user1.id,
+            'place_id': place2.id
+        })
+
+        self.create_review({
+            'text': 'Good place',
+            'rating': 3,
+            'user_id': user3.id,
+            'place_id': place2.id
         })
 
 
@@ -210,19 +245,18 @@ class HBnBFacade:
 
     def get_review(self, review_id):
         review = self.review_repo.get(review_id)
-        if not review:
-            raise ValueError("Review not found")
-        return review
+        if review:
+            return review
+        return None
 
     def get_all_reviews(self):
         return self.review_repo.get_all()
 
     def get_reviews_by_place(self, place_id):
         place = self.get_place(place_id)
-        if not place:
-            raise ValueError("Review not found")
-
-        return place.reviews
+        if place:
+            return place.reviews
+        return None
 
     def update_review(self, review_id, review_data):
         review = self.get_review(review_id)

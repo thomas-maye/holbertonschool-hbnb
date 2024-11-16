@@ -49,8 +49,6 @@ class ReviewList(Resource):
         
         # If the user has already reviewed the place, return a 400 error with the message "You have already reviewed this place."
         for review in place.reviews:
-            print('review.user.id', review.user.id)
-            print('current_user["id"]', current_user['id'])
             if review.user.id == current_user['id']:
                 return {'message': 'You have already reviewed this place.'}, 400
 
@@ -95,12 +93,25 @@ class ReviewResource(Resource):
             }
         return {'message': 'Review not found'}, 404
 
+    @jwt_required()
     @api.expect(update_review_model)
     @api.response(200, 'Review updated successfully')
     @api.response(404, 'Review not found')
     @api.response(400, 'Invalid input data')
+    @api.doc(security='token')
     def put(self, review_id):
         """Update a review's information"""
+        # Retrieve the current user from the JWT token
+        current_user = get_jwt_identity()
+
+        review = facade.get_review(review_id)
+        
+        if not review:
+            return {'message': 'Review not found'}, 404
+        
+        if review.user.id != current_user['id']:
+            return {'message': 'You are not authorized to update this review'}, 403
+
         try:
             updated_review = facade.update_review(review_id, api.payload)
             if updated_review:
