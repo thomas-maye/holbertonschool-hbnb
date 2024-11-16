@@ -80,6 +80,22 @@ class HBnBFacade:
             'place_id': place2.id
         })
 
+        amenity1 = self.create_amenity({
+            'name': 'Wifi'
+        })
+
+        amenity2 = self.create_amenity({
+            'name': 'TV'
+        })
+
+        amenity3 = self.create_amenity({
+            'name': 'Swimming pool'
+        })
+
+        self.add_amenity_to_place(place1.id, amenity1.id)
+        self.add_amenity_to_place(place1.id, amenity2.id)
+        self.add_amenity_to_place(place2.id, amenity1.id)
+        self.add_amenity_to_place(place2.id, amenity3.id)
 
     """
     User
