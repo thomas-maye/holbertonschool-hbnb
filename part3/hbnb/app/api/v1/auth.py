@@ -3,7 +3,7 @@ from flask_jwt_extended import create_access_token
 from app.services import facade
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
-api = Namespace('auth', description='Authentication operations')
+api = Namespace('auth', security='token', description='Authentication operations')
 
 # Model for input validation
 login_model = api.model('Login', {
@@ -36,6 +36,7 @@ class Login(Resource):
 @api.route('/protected')
 class ProtectedResource(Resource):
     @jwt_required()
+    @api.doc(security='token')
     def get(self):
         """A protected endpoint that requires a valid JWT token"""
         current_user = get_jwt_identity()  # Retrieve the user's identity from the token

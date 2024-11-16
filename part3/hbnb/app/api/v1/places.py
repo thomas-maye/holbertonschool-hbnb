@@ -1,5 +1,7 @@
 from flask_restx import Namespace, Resource, fields
 from app.services import facade
+from flask_jwt_extended import jwt_required, get_jwt_identity
+
 
 api = Namespace('places', description='Place operations')
 
@@ -22,9 +24,13 @@ class PlaceList(Resource):
     @api.expect(place_model)
     @api.response(201, 'Place successfully created')
     @api.response(400, 'Invalid input data')
+    @jwt_required()
+    @api.doc(security='token')
     def post(self):
         """Register a new place"""
+        current_user = get_jwt_identity()
         place_data = api.payload
+        place_data['owner_id'] = current_user['id']
         try:
             new_place = facade.create_place(place_data)
             return {
@@ -84,14 +90,21 @@ class PlaceResource(Resource):
             } for amenity in place_data.amenities],
         }, 200
 
+# EN COURS
+    @jwt_required()
     @api.expect(place_model)
     @api.response(200, 'Place successfully updated')
     @api.response(404, 'Place not found')
     @api.response(400, 'Invalid input data')
+    @api.doc(security='token')
     def put(self, place_id):
         """Update a place by its ID"""
         # Get the place data
-        place_data = api.payload
+        current_user = get_jwt_identity()
+        
+        if place_data['owner_id'] != current_user['id']:
+            return {'error': 'Unauthorized action'}, 403
+
         try:
             # Update the place data
             updated_place = facade.update_place(place_id, place_data)
@@ -106,6 +119,12 @@ class PlaceResource(Resource):
         except ValueError as e:
             # Return an error if the input data is invalid
             return {'error': str(e)}, 400
+
+    @api.response(200, 'Place details retrieved successfully')
+    def get(self, place_id):
+        """Retrieve detailed information about a specific place"""
+        place = facade.get_place(place_id)
+        return place.to_dict(), 200
 
 
 @api.route('/<place_id>/amenities/<amenity_id>')
