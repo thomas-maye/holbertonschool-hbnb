@@ -12,6 +12,40 @@ class HBnBFacade:
         self.amenity_repo = InMemoryRepository()  # Repository for amenities
         self.review_repo = InMemoryRepository()  # Repository for reviews
 
+        # Create some initial data
+        user1 = self.create_user({
+            'first_name': 'Thomas',
+            'last_name': 'Mayé',
+            'email': 'maye@mail.com',
+            'password': 'thomaspass',
+        })
+
+        user2 = self.create_user({
+            'first_name': 'Camille',
+            'last_name': 'Inconnu',
+            'email': 'camille@mail.com',
+            'password': 'camillepass',
+        })
+
+        self.create_place({
+            'title': 'Maison en bretagne',
+            'description': 'A nice place',
+            'price': 100,
+            'latitude': 48.8566,
+            'longitude': 2.3522,
+            'owner_id': user1.id
+        })
+
+        self.create_place({
+            'title': 'Tiny House',
+            'description': 'Another nice place',
+            'price': 200,
+            'latitude': 48.8566,
+            'longitude': 2.3522,
+            'owner_id': user2.id
+        })
+
+
     """
     User
     """

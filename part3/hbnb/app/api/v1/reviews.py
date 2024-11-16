@@ -1,5 +1,6 @@
 from flask_restx import Namespace, Resource, fields
 from app.services import facade
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 api = Namespace('reviews', description='Review operations')
 
@@ -21,13 +22,40 @@ update_review_model = api.model('UpdateReview', {
 
 @api.route('/')
 class ReviewList(Resource):
+    @jwt_required()
     @api.expect(add_review_model)
     @api.response(201, 'Review successfully created')
     @api.response(400, 'Invalid input data')
+    @api.doc(security='token')
     def post(self):
         """Register a new review"""
+        # Retrieve the current user from the JWT token
+        current_user = get_jwt_identity()
+
+        # Store the user ID in the payload
+        review_data = api.payload
+        review_data['user_id'] = current_user['id']
+
+        # Retrieve the place
+        place = facade.get_place(api.payload['place_id'])
+
+        # If the place does not exist, return a 404 error with the message "Place not found."
+        if not place:
+            return {'message': 'Place not found'}, 404
+
+        # If the user is the owner of the place, return a 400 error with the message "You cannot review your own place."
+        if current_user['id'] == place.owner.id:
+            return {'message': 'You cannot review your own place.'}, 400
+        
+        # If the user has already reviewed the place, return a 400 error with the message "You have already reviewed this place."
+        for review in place.reviews:
+            print('review.user.id', review.user.id)
+            print('current_user["id"]', current_user['id'])
+            if review.user.id == current_user['id']:
+                return {'message': 'You have already reviewed this place.'}, 400
+
         try:
-            new_review = facade.create_review(api.payload)
+            new_review = facade.create_review(review_data)
             return {
                 'id': new_review.id,
                 'text': new_review.text,

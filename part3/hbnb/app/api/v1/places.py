@@ -100,6 +100,7 @@ class PlaceResource(Resource):
         """Update a place by its ID"""
         # Retrieve the current user's from the JWT token
         current_user = get_jwt_identity()
+ 
 
         place = facade.get_place(place_id)
         
@@ -162,10 +163,12 @@ class PlaceReviewList(Resource):
     def get(self, place_id):
         """Get all reviews for a specific place"""
         reviews = facade.get_reviews_by_place(place_id)
+
         if not reviews:
-            return [{
-                'id': review.id,
-                'text': review.text,
-                'rating': review.rating
-            } for review in reviews], 200
-        return {'message': 'Reviews not found'}, 404
+            return {'message': 'Reviews not found'}, 404
+
+        return [{
+            'id': review.id,
+            'text': review.text,
+            'rating': review.rating
+        } for review in reviews], 200
