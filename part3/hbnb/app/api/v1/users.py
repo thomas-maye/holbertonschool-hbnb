@@ -33,12 +33,14 @@ class UserList(Resource):
 
         new_user = facade.create_user(user_data)
 
-        return new_user.id, 201
+        return {'id': new_user.id, 'message': 'User successfully created'}, 201
 
     @api.response(200, "User list retrieve")
     def get(self):
         """Retrieve a list of users"""
         users = facade.get_all_users()
+        if not users:
+            return {'error': 'No users found'}, 404
 
         return [{
             'id': user.id,
@@ -61,15 +63,47 @@ class UserResource(Resource):
         return {'id': user.id, 'first_name': user.first_name,
                 'last_name': user.last_name, 'email': user.email}, 200
 
+    @jwt_required()
     @api.expect(user_model, validate=True)
     @api.response(200, "User Updated")
+    @api.doc(security='token') 
     def put(self, user_id):
         """Update User information"""
+        # Retrieve the current user from the JWT token
+        current_user = get_jwt_identity()
+
+        # Get the user data from the request payload
         user_data = api.payload
 
-        user = facade.update_user(user_id, user_data)
+        # Get the user
+        user = facade.get_user(user_id)
+
+        # Check if the user exists
         if not user:
             return {"error": "User not found"}, 404
+        
+        # Check if the user is the same as the current user
+        if user.id != current_user['id']:
+            return {"error": "Unauthorized action"}, 403
+        
+        # Check if email and password fields are present in the request payload
+        if 'email' in user_data or 'password' in user_data:
+            # Check if the user is trying to modify email or password
+            if user_data['email'] != user.email or not user.verify_password(user_data['password']):
+                return {"error": "You cannot modify email or password."}, 400
+        else:
+            user_data['email'] = user.email
+            user_data['password'] = user.password
 
-        return {'id': user.id, 'first_name': user.first_name,
-                'last_name': user.last_name, 'email': user.email}, 200
+        # Update the user data
+        user = facade.update_user(user_id, user_data)
+
+        # Return the updated user data
+        return {
+            'id': user.id,
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            'email': user.email
+        }, 200
+    
+        

@@ -1,8 +1,9 @@
 from flask_restx import Namespace, Resource, fields
 from flask_jwt_extended import create_access_token
 from app.services import facade
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
-api = Namespace('auth', description='Authentication operations')
+api = Namespace('auth', security='token', description='Authentication operations')
 
 # Model for input validation
 login_model = api.model('Login', {
@@ -27,7 +28,20 @@ class Login(Resource):
 
         # Step 3: Create a JWT token with the user's id and is_admin flag
         access_token = create_access_token(
-            identity={'id': str(user.id), 'is_admin': user.is_admin})
+            identity = {
+                'id': str(user.id),
+                'is_admin': user.is_admin
+            }
+        )
 
         # Step 4: Return the JWT token to the client
         return {'access_token': access_token}, 200
+    
+@api.route('/protected')
+class ProtectedResource(Resource):
+    @jwt_required()
+    @api.doc(security='token')
+    def get(self):
+        """A protected endpoint that requires a valid JWT token"""
+        current_user = get_jwt_identity()  # Retrieve the user's identity from the token
+        return {'message': f'Hello, user {current_user["id"]}'}, 200
