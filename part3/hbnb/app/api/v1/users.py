@@ -60,7 +60,7 @@ class UserResource(Resource):
             return {'error': 'User not found'}, 404
 
         return {'id': user.id, 'first_name': user.first_name,
-                'last_name': user.last_name, 'email': user.email}, 200
+                'last_name': user.last_name, 'email': user.email }, 200
 
     @jwt_required()
     @api.expect(user_model, validate=True)
@@ -109,12 +109,13 @@ class UserResource(Resource):
 class AdminUserCreate(Resource):
     @jwt_required()
     @api.expect(user_model, validate=True)
+    @api.doc(security='token')
     def post(self):
         """Create User by an Admin"""
         current_user = get_jwt()
         print("Decoded JWT: ", current_user)
         
-        if not current_user.get('is_admin', False):
+        if not any([current_user.get('sub', {}).get('is_admin', False)]):
             return {'error': 'Admin privileges required'}, 403
 
         user_data = api.payload
@@ -137,7 +138,7 @@ class AdminUserModify(Resource):
         
         current_user = get_jwt()
         
-        if not current_user.get('is_admin', False):
+        if not current_user.get('is_admin'):
             return {'error': 'Admin privileges required'}, 403
 
         user_data = api.payload
