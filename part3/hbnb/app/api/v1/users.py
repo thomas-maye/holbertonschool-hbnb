@@ -138,7 +138,7 @@ class AdminUserModify(Resource):
         
         current_user = get_jwt()
         
-        if not current_user.get('is_admin'):
+        if not current_user.get('is_admin', False):
             return {'error': 'Admin privileges required'}, 403
 
         user_data = api.payload
