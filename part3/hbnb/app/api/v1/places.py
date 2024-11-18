@@ -1,6 +1,6 @@
 from flask_restx import Namespace, Resource, fields
 from app.services import facade
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 
 
 api = Namespace('places', description='Place operations')
@@ -197,3 +197,42 @@ class PlaceAmenitiesList(Resource):
                 'id': amenity.id,
                 'name': amenity.name,
             } for amenity in amenities], 200
+
+
+@api.route('/place/<place_id>')
+class AdminPlaceModify(Resource):
+    @jwt_required()
+    @api.expect(place_model)
+    @api.doc(security='token')
+    def put(self, place_id):
+        """Update place by an Admin"""
+
+        current_user = get_jwt()
+        is_admin = current_user.get('is_admin', False)
+        place_data = api.payload
+
+        if not is_admin:
+            
+            if place_data.owner_id != current_user['id']:
+                return {'error': 'Unauthorized action'}, 403
+            
+        place = facade.get_place(place_id)
+        
+        if place.owner.id != current_user['id']:
+            return {'error': 'Unauthorized action'}, 403
+
+        try:
+            # Update the place data
+            place_data['owner_id'] = current_user['id']
+            updated_place = facade.update_place(place_id, place_data)
+            if updated_place:
+                return {
+                    "message": "Place updated successfully"
+                }, 200
+
+            # Return an error if the place is not found
+            return {'error': 'Place not found'}, 404
+
+        except ValueError as e:
+            # Return an error if the input data is invalid
+            return {'error': str(e)}, 400

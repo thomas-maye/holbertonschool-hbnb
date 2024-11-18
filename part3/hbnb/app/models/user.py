@@ -10,7 +10,7 @@ from app import bcrypt
 class User(BaseModel):
     """Users class based on BaseModel class"""
 
-    def __init__(self, first_name, last_name, email, password, is_admin=False):
+    def __init__(self, first_name, last_name, email, password, is_admin=True):
         """
         Constructor for Users class
 
@@ -85,7 +85,7 @@ class User(BaseModel):
         regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
 
         if not re.match(regex, value):
-            raise EmailNotValidError("Email format not valid.")
+            return EmailNotValidError("Email format not valid.")
 
         try:
             emailinfo = validate_email(email, check_deliverability=False)

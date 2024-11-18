@@ -1,6 +1,6 @@
 from flask_restx import Namespace, Resource, fields
 from app.services import facade
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 
 api = Namespace('users', description='User operations')
 
@@ -48,7 +48,6 @@ class UserList(Resource):
             'last_name': user.last_name,
             'email': user.email}
             for user in users], 200
-
 
 @api.route('/<user_id>')
 class UserResource(Resource):
@@ -105,5 +104,59 @@ class UserResource(Resource):
             'last_name': user.last_name,
             'email': user.email
         }, 200
-    
+
+@api.route('/users/')
+class AdminUserCreate(Resource):
+    @jwt_required()
+    @api.expect(user_model, validate=True)
+    def post(self):
+        """Create User by an Admin"""
+        current_user = get_jwt()
+        print("Decoded JWT: ", current_user)
         
+        if not current_user.get('is_admin', False):
+            return {'error': 'Admin privileges required'}, 403
+
+        user_data = api.payload
+        email = user_data['email']
+        # Check if email is already in use
+        if facade.get_user_by_email(email):
+            return {'error': 'Email already registered'}, 400
+
+        new_user = facade.create_user(user_data)
+
+        return {'id': new_user.id, 'message': 'User successfully created'}, 201
+    
+@api.route('/users/<user_id>')
+class AdminUserModify(Resource):
+    @jwt_required()
+    @api.expect(user_model, validate=True)
+    @api.doc(security='token')
+    def put(self, user_id):
+        """Updated user by Admin"""
+        
+        current_user = get_jwt()
+        
+        if not current_user.get('is_admin', False):
+            return {'error': 'Admin privileges required'}, 403
+
+        user_data = api.payload
+        email = user_data['email']
+
+        # Ensure email uniqueness
+        if email:
+            existing_user = facade.get_user_by_email(email)
+            if existing_user and existing_user['user_id'] != user_id:
+                return {'error': 'Email already in use'}, 400
+
+
+        # Update the user data
+        user = facade.update_user(user_id, user_data)
+
+        # Return the updated user data
+        return {
+            'id': user.id,
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            'email': user.email
+        }, 200
