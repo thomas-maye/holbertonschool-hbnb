@@ -2,7 +2,7 @@ from flask_restx import Namespace, Resource, fields
 from app.services import facade
 from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 
-api = Namespace('users', description='User operations')
+api = Namespace('users', security='token', description='User operations')
 
 # Define the user model for input validation and documentation
 user_model = api.model('User', {

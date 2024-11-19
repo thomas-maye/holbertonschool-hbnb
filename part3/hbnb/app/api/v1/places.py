@@ -3,7 +3,7 @@ from app.services import facade
 from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 
 
-api = Namespace('places', description='Place operations')
+api = Namespace('places', security='token', description='Place operations')
 
 # Define the place model for input validation and documentation
 place_model = api.model('Place', {
