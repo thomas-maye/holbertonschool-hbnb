@@ -1,6 +1,6 @@
 from flask_restx import Namespace, Resource, fields
 from app.services import facade
-from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 api = Namespace('reviews', description='Review operations')
 
@@ -114,12 +114,9 @@ class ReviewResource(Resource):
 
         try:
             updated_review = facade.update_review(review_id, api.payload)
-            
             if updated_review:
                 return {'message': 'Review updated successfully'}, 200
-            
             return {'message': 'Review not found'}, 404
-        
         except ValueError as e:
             return {'message': str(e)}, 400
 
@@ -140,67 +137,6 @@ class ReviewResource(Resource):
             return {'message': 'Unauthorized action.'}, 403
 
         deleted_review = facade.delete_review(review_id)
-        
         if deleted_review:
             return {'message': 'Review deleted successfully'}, 200
         return {'message': 'Review not found'}, 404
-
-
-@api.route('/reviews/<review_id>')
-class AdminReviewModify(Resource):
-    @jwt_required()
-    @api.expect(add_review_model)
-    @api.doc(security='token')
-    def put(self, review_id):
-        """Update Review by an Admin"""
-        
-        current_user = get_jwt()
-        is_admin = current_user.get('is_admin', False)
-        
-        review = facade.get_review(review_id)
-        
-        if not review:
-            return {'message': 'Review not found'}, 404
-        
-        if not is_admin:
-            if review['user_id'] != current_user['id']:
-                return {'error': 'Unauthorized action'}, 403
-            
-        updated_review_data = api.payload
-
-        try:
-            updated_review = facade.update_review(review_id, updated_review_data)
-            
-            if updated_review:
-                return {'message': 'Review updated successfully'}, 200
-            
-            return {'message': 'Review not found'}, 404
-        
-        except ValueError as e:
-            return {'message': str(e)}, 400
-        
-    @jwt_required()
-    @api.expect(add_review_model)
-    @api.doc(security='token')
-    def delete(self, review_id):
-        """Delete Review by an Admin"""
-        
-        current_user = get_jwt()
-        is_admin = current_user.get('is_admin', False)
-        
-        review = facade.get_review(review_id)
-        
-        if not review:
-            return {'message': 'Review not found'}, 404
-        
-        if not is_admin:
-            if review['user_id'] != current_user['id']:
-                return {'error': 'Unauthorized action'}, 403
-            
-        
-        review = facade.get_review(review_id)
-
-        deleted_review = facade.delete_review(review_id)
-        
-        if deleted_review:
-            return {'message': 'Review deleted successfully'}, 200
