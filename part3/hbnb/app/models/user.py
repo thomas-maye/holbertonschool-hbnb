@@ -1,14 +1,21 @@
 from app.models.base_model import BaseModel
 from email_validator import validate_email, EmailNotValidError
 import re
-from app import bcrypt
-
+from app import bcrypt, db
 
 """Module Define Users class """
 
 
 class User(BaseModel):
     """Users class based on BaseModel class"""
+
+    __tablename__ = 'users'
+
+    first_name = db.Column(db.String(50), nullable=False)
+    last_name = db.Column(db.String(50), nullable=False)
+    email = db.Column(db.String(120), nullable=False, unique=True)
+    password = db.Column(db.String(128), nullable=False)
+    is_admin = db.Column(db.Boolean, default=False)
 
     def __init__(self, first_name, last_name, email, password, is_admin=False):
         """

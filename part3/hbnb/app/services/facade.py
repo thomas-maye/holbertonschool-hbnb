@@ -3,14 +3,15 @@ from app.models.user import User
 from app.models.place import Place
 from app.models.amenity import Amenity
 from app.models.review import Review
+from app.persistence.repository import SQLAlchemyRepository
 
 
 class HBnBFacade:
     def __init__(self):
-        self.place_repo = InMemoryRepository()  # Repository for places
-        self.user_repo = InMemoryRepository()   # Repository for users
-        self.amenity_repo = InMemoryRepository()  # Repository for amenities
-        self.review_repo = InMemoryRepository()  # Repository for reviews
+        self.place_repo = SQLAlchemyRepository(Place)  # Repository for places
+        self.user_repo = SQLAlchemyRepository(User)   # Repository for users
+        self.amenity_repo = SQLAlchemyRepository(Amenity)  # Repository for amenities
+        self.review_repo = SQLAlchemyRepository(Review)  # Repository for reviews
 
         # Create some initial data
         user1 = self.create_user({
@@ -103,6 +104,7 @@ class HBnBFacade:
 
     def create_user(self, user_data):
         user = User(**user_data)
+        user.hash_password(user_data['password'])
         self.user_repo.add(user)
         return user
 
@@ -196,7 +198,7 @@ class HBnBFacade:
         """Get all amenities."""
         amenities = self.amenity_repo.get_all()
         return amenities
-    
+
     def get_amenities_by_place(self, place_id):
         """Get all amenities for a place."""
         place = self.get_place(place_id)

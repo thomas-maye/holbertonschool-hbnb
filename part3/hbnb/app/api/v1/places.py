@@ -2,7 +2,6 @@ from flask_restx import Namespace, Resource, fields
 from app.services import facade
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
-
 api = Namespace('places', description='Place operations')
 
 # Define the place model for input validation and documentation
@@ -21,15 +20,13 @@ place_model = api.model('Place', {
 
 @api.route('/')
 class PlaceList(Resource):
+    @jwt_required()
     @api.expect(place_model)
     @api.response(201, 'Place successfully created')
-    @api.response(400, 'Invalid input data')
-    @jwt_required()
-    @api.doc(security='token')
     def post(self):
         """Register a new place"""
-        current_user = get_jwt_identity()
         place_data = api.payload
+        current_user = get_jwt_identity()
         place_data['owner_id'] = current_user['id']
         try:
             new_place = facade.create_place(place_data)
@@ -90,27 +87,16 @@ class PlaceResource(Resource):
             } for amenity in place_data.amenities],
         }, 200
 
-    @jwt_required()
     @api.expect(place_model)
     @api.response(200, 'Place successfully updated')
     @api.response(404, 'Place not found')
     @api.response(400, 'Invalid input data')
-    @api.doc(security='token')
     def put(self, place_id):
         """Update a place by its ID"""
-        # Retrieve the current user's from the JWT token
-        current_user = get_jwt_identity()
- 
-
-        place = facade.get_place(place_id)
-        
-        if place.owner.id != current_user['id']:
-            return {'error': 'Unauthorized action'}, 403
-
+        # Get the place data
+        place_data = api.payload
         try:
             # Update the place data
-            place_data = api.payload
-            place_data['owner_id'] = current_user['id']
             updated_place = facade.update_place(place_id, place_data)
             if updated_place:
                 return {
@@ -162,21 +148,14 @@ class PlaceReviewList(Resource):
     @api.response(404, 'Place not found')
     def get(self, place_id):
         """Get all reviews for a specific place"""
-        place = facade.get_place(place_id)
         reviews = facade.get_reviews_by_place(place_id)
-
-        if not place:
-            return {'message': 'Place not found'}, 404
-        
-        if not reviews:
-            return {'message': 'Reviews not found'}, 404
-
-        return [{
-            'id': review.id,
-            'text': review.text,
-            'rating': review.rating
-        } for review in reviews], 200
-
+        if reviews:
+            return [{
+                'id': review.id,
+                'text': review.text,
+                'rating': review.rating
+            } for review in reviews], 200
+        return {'message': 'Reviews not found'}, 404
 
 @api.route('/<place_id>/amenities')
 class PlaceAmenitiesList(Resource):
@@ -184,16 +163,10 @@ class PlaceAmenitiesList(Resource):
     @api.response(404, 'Place not found')
     def get(self, place_id):
         """Get all amenities for a specific place"""
-        place = facade.get_place(place_id)
         amenities = facade.get_amenities_by_place(place_id)
-        
-        if not place:
-            return {'message': 'Place not found'}, 404
-        
-        if not amenities:
-            return {'message': 'Aminity not found'}, 404
-        
-        return [{
+        if amenities:
+            return [{
                 'id': amenity.id,
                 'name': amenity.name,
             } for amenity in amenities], 200
+        return {'message': 'Reviews not found'}, 404
