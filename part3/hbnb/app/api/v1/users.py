@@ -1,6 +1,8 @@
 from flask_restx import Namespace, Resource, fields
 from app.services import facade
 from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask import jsonify
+import json
 
 api = Namespace('users', description='User operations')
 
@@ -70,7 +72,7 @@ class UserResource(Resource):
     def put(self, user_id):
         """Update User information"""
         # Retrieve the current user from the JWT token
-        current_user = get_jwt_identity()
+        current_user = json.loads(get_jwt_identity())
 
         # Get the user data from the request payload
         user_data = api.payload

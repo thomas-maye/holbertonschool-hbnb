@@ -1,6 +1,8 @@
 from flask_restx import Namespace, Resource, fields
 from app.services import facade
 from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask import jsonify
+import json
 
 
 api = Namespace('places', description='Place operations')
@@ -14,8 +16,7 @@ place_model = api.model('Place', {
     'latitude': fields.Float(required=True,
                              description='Latitude of the place'),
     'longitude': fields.Float(required=True,
-                              description='Longitude of the place'),
-    'owner_id': fields.String(required=True, description='ID of the owner')
+                              description='Longitude of the place')
 })
 
 
@@ -28,7 +29,7 @@ class PlaceList(Resource):
     @api.doc(security='token')
     def post(self):
         """Register a new place"""
-        current_user = get_jwt_identity()
+        current_user = json.loads(get_jwt_identity())
         place_data = api.payload
         place_data['owner_id'] = current_user['id']
         try:
@@ -99,9 +100,8 @@ class PlaceResource(Resource):
     def put(self, place_id):
         """Update a place by its ID"""
         # Retrieve the current user's from the JWT token
-        current_user = get_jwt_identity()
+        current_user = json.loads(get_jwt_identity())
  
-
         place = facade.get_place(place_id)
         
         if place.owner.id != current_user['id']:
