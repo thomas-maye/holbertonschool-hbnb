@@ -1,6 +1,7 @@
 from flask_restx import Namespace, Resource, fields
 from app.services import facade
 from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
+import json
 
 api = Namespace('users', description='User operations')
 
@@ -69,7 +70,7 @@ class UserResource(Resource):
     def put(self, user_id):
         """Update User information"""
         # Retrieve the current user from the JWT token
-        current_user = get_jwt_identity()
+        current_user = json.loads(get_jwt_identity())
 
         # Get the user data from the request payload
         user_data = api.payload
@@ -112,7 +113,7 @@ class AdminUserCreate(Resource):
     @api.doc(security='token')
     def post(self):
         """Create User by an Admin"""
-        current_user = get_jwt()
+        current_user = json.loads(get_jwt_identity())
         print("Decoded JWT: ", current_user)
         
         if not any([current_user.get('sub', {}).get('is_admin', False)]):
@@ -136,7 +137,7 @@ class AdminUserModify(Resource):
     def put(self, user_id):
         """Updated user by Admin"""
         
-        current_user = get_jwt()
+        current_user = json.loads(get_jwt_identity())
         
         if not current_user.get('is_admin', False):
             return {'error': 'Admin privileges required'}, 403

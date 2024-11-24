@@ -1,6 +1,7 @@
 from flask_restx import Namespace, Resource, fields
 from app.services import facade
 from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
+import json
 
 api = Namespace('reviews', description='Review operations')
 
@@ -102,7 +103,7 @@ class ReviewResource(Resource):
     def put(self, review_id):
         """Update a review's information"""
         # Retrieve the current user from the JWT token
-        current_user = get_jwt_identity()
+        current_user = json.loads(get_jwt_identity())
 
         review = facade.get_review(review_id)
         
@@ -130,7 +131,7 @@ class ReviewResource(Resource):
     def delete(self, review_id):
         """Delete a review"""
         # Retrieve the current user from the JWT token
-        current_user = get_jwt_identity()
+        current_user = json.loads(get_jwt_identity())
 
         review = facade.get_review(review_id)
         if not review:
@@ -154,7 +155,7 @@ class AdminReviewModify(Resource):
     def put(self, review_id):
         """Update Review by an Admin"""
         
-        current_user = get_jwt()
+        current_user = json.loads(get_jwt_identity())
         is_admin = current_user.get('is_admin', False)
         
         review = facade.get_review(review_id)
@@ -185,7 +186,7 @@ class AdminReviewModify(Resource):
     def delete(self, review_id):
         """Delete Review by an Admin"""
         
-        current_user = get_jwt()
+        current_user = json.loads(get_jwt_identity())
         is_admin = current_user.get('is_admin', False)
         
         review = facade.get_review(review_id)

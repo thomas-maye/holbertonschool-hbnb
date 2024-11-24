@@ -2,7 +2,7 @@ from flask_restx import Namespace, Resource, fields
 from app.services import facade
 from flask import jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
-
+import json
 api = Namespace('amenities', description='Amenity operations')
 
 amenity_model = api.model('Amenity', {
@@ -91,7 +91,7 @@ class AdminAmenityCreate(Resource):
     def post(self):
         """Create Aminity by an Admin"""
         
-        current_user = get_jwt()
+        current_user = json.loads(get_jwt_identity())
         
         if not current_user.get('is_admin', False):
             return {'error': 'Admin privileges required'}, 403
@@ -116,7 +116,7 @@ class AdminAmenityModify(Resource):
     def put(self, amenity_id):
         """Update Aminities by an Admin"""
         
-        current_user = get_jwt()
+        current_user = json.loads(get_jwt_identity())
         if not current_user.get('is_admin', False):
             return {'error': 'Admin privileges required'}, 403
 
