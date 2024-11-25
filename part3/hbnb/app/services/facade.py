@@ -268,7 +268,7 @@ class HBnBFacade:
         if not review:
             raise ValueError("Review not found")
 
-        place = self.get_place(review.place.id)
+        place = self.get_place(review.place_id)
         place.remove_review(review)
         self.review_repo.delete(review_id)
         db.session.commit()

@@ -90,8 +90,8 @@ class ReviewResource(Resource):
                 'id': review.id,
                 'text': review.text,
                 'rating': review.rating,
-                'user_id': review.user.id,
-                'place_id': review.place.id
+                'user_id': review.user_id,
+                'place_id': review.place_id
             }
         return {'message': 'Review not found'}, 404
 
@@ -135,11 +135,10 @@ class ReviewResource(Resource):
         if not review:
             return {'message': 'Review not found'}, 404
         
-        if review.user.id != current_user['id']:
+        if review.user_id != current_user['id']:
             return {'message': 'Unauthorized action.'}, 403
 
         deleted_review = facade.delete_review(review_id)
         if deleted_review:
             return {'message': 'Review deleted successfully'}, 200
         return {'message': 'Review not found'}, 404
-    
