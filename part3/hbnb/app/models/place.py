@@ -2,7 +2,8 @@ from app.models.base_model import BaseModel
 from app.models.user import User
 from app import db
 from sqlalchemy.orm import relationship
-from app.models import place_amenity
+from app.models.place_amenity import place_amenity
+
 
 class Place(BaseModel):
     """Place class that inherits from BaseModel."""
@@ -16,8 +17,7 @@ class Place(BaseModel):
     longitude = db.Column(db.Float(), nullable=False)
     owner_id = db.Column(db.String(36), db.ForeignKey('users.id'), nullable=False)
     reviews = relationship('Review', backref='place', lazy=True)
-    amenities = relationship('Amenity', secondary=place_amenity, lazy='subquery',
-                              backref=db.backref('places', lazy=True))
+    amenities = relationship('Amenity', secondary=place_amenity, back_populates='places', lazy=True)
 
     
     def add_review(self, review):

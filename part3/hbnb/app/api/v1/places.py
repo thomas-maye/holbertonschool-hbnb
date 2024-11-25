@@ -97,10 +97,12 @@ class PlaceResource(Resource):
         """Update a place by its ID"""
         # Retrieve the current user's from the JWT token
         current_user = json.loads(get_jwt_identity())
- 
+        print(current_user['id'])
         place = facade.get_place(place_id)
+        print(current_user)
+        print(place.owner_id)
         
-        if place['owner_id'] != current_user['id']:
+        if place.owner_id != current_user['id']:
             return {'error': 'Unauthorized action'}, 403
 
         try:

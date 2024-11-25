@@ -2,7 +2,7 @@ from app.models.base_model import BaseModel
 from app import db
 import uuid
 from sqlalchemy.orm import relationship
-from app.models import place_amenity
+from app.models.place_amenity import place_amenity
 
 class Amenity(BaseModel):
     """Amenity class that inherits from BaseModel."""
