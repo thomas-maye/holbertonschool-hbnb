@@ -60,8 +60,8 @@ class ReviewList(Resource):
                 'id': new_review.id,
                 'text': new_review.text,
                 'rating': new_review.rating,
-                'user_id': new_review.user.id,
-                'place_id': new_review.place.id
+                'user_id': new_review.user_id,
+                'place_id': new_review.place_id
             }, 201
 
         except ValueError as e:
@@ -142,3 +142,4 @@ class ReviewResource(Resource):
         if deleted_review:
             return {'message': 'Review deleted successfully'}, 200
         return {'message': 'Review not found'}, 404
+    

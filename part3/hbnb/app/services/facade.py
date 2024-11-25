@@ -218,6 +218,7 @@ class HBnBFacade:
             raise ValueError("Amenity not found")
 
         place.remove_amenity(amenity)
+        db.session.commit()
         return place
 
     def update_amenity(self, amenity_id, amenity_data):
@@ -235,28 +236,9 @@ class HBnBFacade:
     """
 
     def create_review(self, review_data):
-
-        user = self.get_user(review_data.get('user_id'))
-        place = self.get_place(review_data.get('place_id'))
-
-        if not user or not place:
-            raise ValueError("Invalid user or place ID")
-
-        rating = review_data.get('rating')
-        if not isinstance(rating, int) or not (1 <= rating <= 5):
-            raise ValueError("Rating must be between 1 and 5")
-
-        new_review = Review(
-            text=review_data['text'],
-            rating=review_data['rating'],
-            user=user,
-            place=place
-        )
-
-        place.add_review(new_review)
-        self.review_repo.add(new_review)
-
-        return new_review
+        review = Review(**review_data)
+        self.review_repo.add(review)
+        return review
 
     def get_review(self, review_id):
         review = self.review_repo.get(review_id)
