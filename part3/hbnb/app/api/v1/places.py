@@ -31,6 +31,7 @@ class PlaceList(Resource):
         """Register a new place"""
         current_user = json.loads(get_jwt_identity())
         place_data = api.payload
+        print(current_user['id'])
         place_data['owner_id'] = current_user['id']
         try:
             new_place = facade.create_place(place_data)
@@ -41,7 +42,7 @@ class PlaceList(Resource):
                 "price": new_place.price,
                 "latitude": new_place.latitude,
                 "longitude": new_place.longitude,
-                "owner_id": new_place.owner.id
+                "owner_id": new_place.owner_id
             }, 201
         except ValueError as e:
             return {'error': str(e)}, 400
@@ -79,12 +80,7 @@ class PlaceResource(Resource):
             'price': place_data.price,
             'latitude': place_data.latitude,
             'longitude': place_data.longitude,
-            'owner': {
-                'id': place_data.owner.id,
-                'first_name': place_data.owner.first_name,
-                'last_name': place_data.owner.last_name,
-                'email': place_data.owner.email
-            },
+            'owner_id': place_data.owner_id,
             'amenities': [{
                 'id': amenity.id,
                 'name': amenity.name
@@ -104,7 +100,7 @@ class PlaceResource(Resource):
  
         place = facade.get_place(place_id)
         
-        if place.owner.id != current_user['id']:
+        if place['owner_id'] != current_user['id']:
             return {'error': 'Unauthorized action'}, 403
 
         try:

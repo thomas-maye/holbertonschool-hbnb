@@ -1,18 +1,14 @@
 from app.models.base_model import BaseModel
-
+from app import db
+import uuid
+from sqlalchemy.orm import relationship
+from app.models import place_amenity
 
 class Amenity(BaseModel):
     """Amenity class that inherits from BaseModel."""
-    def __init__(self, name):
-        super().__init__()
-        self.name = name
+    __tablename__ = 'amenities'
 
-    @property
-    def name(self):
-        return self.__name
-
-    @name.setter
-    def name(self, value):
-        if len(value) > 50:
-            raise ValueError("Amenity name exceeds maximum length")
-        self.__name = value
+    id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    name = db.Column(db.String(50), nullable=False)
+    places = relationship('Place', secondary=place_amenity, back_populates='amenities', lazy=True)
+    
