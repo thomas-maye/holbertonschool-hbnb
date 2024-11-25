@@ -111,7 +111,7 @@ class ReviewResource(Resource):
         if not review:
             return {'message': 'Review not found'}, 404
         
-        if review.user.id != current_user['id']:
+        if review.user_id != current_user['id']:
             return {'message': 'Unauthorized action.'}, 403
 
         try:

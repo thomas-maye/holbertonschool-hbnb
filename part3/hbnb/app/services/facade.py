@@ -271,4 +271,5 @@ class HBnBFacade:
         place = self.get_place(review.place.id)
         place.remove_review(review)
         self.review_repo.delete(review_id)
+        db.session.commit()
         return review
