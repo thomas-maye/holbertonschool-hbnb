@@ -7,6 +7,7 @@ from app.persistence.repository import UserRepository
 from app.persistence.repository import PlaceRepository
 from app.persistence.repository import ReviewRepository
 from app.persistence.repository import AmenityRepository
+from app import db
 
 
 class HBnBFacade:
@@ -203,6 +204,8 @@ class HBnBFacade:
             raise ValueError("Amenity not found")
 
         place.add_amenity(amenity)
+        db.session.commit()
+        
         return place
 
     def remove_amenity_from_place(self, place_id, amenity_id):

@@ -1,5 +1,4 @@
 from app import db
-from sqlalchemy import Table, Column, Integer, ForeignKey
 
 place_amenity = db.Table(
     'place_amenity',

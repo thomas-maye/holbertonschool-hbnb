@@ -132,6 +132,7 @@ class PlaceAmenity(Resource):
         try:
             # Add the amenity to the place
             facade.add_amenity_to_place(place_id, amenity_id)
+            print(amenity_id)
             return {
                 "message": "Amenity added to place successfully"
             }, 200

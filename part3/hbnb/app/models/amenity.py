@@ -10,5 +10,4 @@ class Amenity(BaseModel):
 
     id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     name = db.Column(db.String(50), nullable=False)
-    places = relationship('Place', secondary=place_amenity, back_populates='amenities', lazy=True)
     
