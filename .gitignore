@@ -18,3 +18,4 @@ part3/hbnb/app/__pycache__/
 __pycache__/
 *.pyc
 part3/hbnb/envHBnB/*
+.vscode/*

@@ -1,6 +1,8 @@
 from flask_restx import Namespace, Resource, fields
 from app.services import facade
 from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
+from flask import jsonify
+import json
 
 api = Namespace('users', description='User operations')
 
@@ -49,6 +51,7 @@ class UserList(Resource):
             'email': user.email}
             for user in users], 200
 
+
 @api.route('/<user_id>')
 class UserResource(Resource):
     @api.response(200, 'User details retrieved successfully')
@@ -60,7 +63,7 @@ class UserResource(Resource):
             return {'error': 'User not found'}, 404
 
         return {'id': user.id, 'first_name': user.first_name,
-                'last_name': user.last_name, 'email': user.email }, 200
+                'last_name': user.last_name, 'email': user.email}, 200
 
     @jwt_required()
     @api.expect(user_model, validate=True)
@@ -69,7 +72,7 @@ class UserResource(Resource):
     def put(self, user_id):
         """Update User information"""
         # Retrieve the current user from the JWT token
-        current_user = get_jwt_identity()
+        current_user = json.loads(get_jwt_identity())
 
         # Get the user data from the request payload
         user_data = api.payload
