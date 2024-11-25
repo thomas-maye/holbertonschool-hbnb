@@ -5,6 +5,7 @@ from app import bcrypt, db
 from sqlalchemy.orm import validates, relationship
 
 
+
 """Module Define Users class """
 
 class User(BaseModel):
@@ -19,13 +20,12 @@ class User(BaseModel):
     is_admin = db.Column(db.Boolean, default=False)
     places = relationship('Place', backref='owner', lazy=True)
     reviews = relationship('Review', backref='author', lazy=True)
-    
-    regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
         
     @validates("email", include_backrefs=False)
     def validate_email(self, key, value):
-        if not re.fullmatch(self.regex, value):
-            raise ValueError("Invalid email format.")
+        regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+        if not re.match(regex, value):
+            return EmailNotValidError("Email format not valid.")
         return value
     
     def hash_password(self, password):

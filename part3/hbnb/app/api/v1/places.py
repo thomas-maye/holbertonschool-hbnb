@@ -181,6 +181,7 @@ class AdminPlaceModify(Resource):
         """Update place by an Admin"""
         current_user = json.loads(get_jwt())
         is_admin = current_user.get('is_admin', False)
+        
         place_data = api.payload
         if not is_admin:
             
