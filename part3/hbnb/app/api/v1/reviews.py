@@ -102,7 +102,7 @@ class ReviewResource(Resource):
     @api.response(400, 'Invalid input data')
     @api.doc(security='token')
     def put(self, review_id):
-        """Update a review's information"""
+        """Update a review's information and an admin can update any review"""
         # Retrieve the current user from the JWT token
         current_user = json.loads(get_jwt_identity())
 
@@ -111,8 +111,10 @@ class ReviewResource(Resource):
         if not review:
             return {'message': 'Review not found'}, 404
         
-        if review.user_id != current_user['id']:
-            return {'message': 'Unauthorized action.'}, 403
+        # Check if the user is not an admin
+        if not current_user.get('is_admin'):
+            if review.user_id != current_user['id']:
+                return {'message': 'Unauthorized action.'}, 403
 
         try:
             updated_review = facade.update_review(review_id, api.payload)
@@ -127,7 +129,7 @@ class ReviewResource(Resource):
     @api.response(404, 'Review not found')
     @api.doc(security='token')
     def delete(self, review_id):
-        """Delete a review"""
+        """Delete a review and an admin can delete any review"""
         # Retrieve the current user from the JWT token
         current_user = json.loads(get_jwt_identity())
 
@@ -135,62 +137,13 @@ class ReviewResource(Resource):
         if not review:
             return {'message': 'Review not found'}, 404
         
-        if review.user_id != current_user['id']:
-            return {'message': 'Unauthorized action.'}, 403
+        # Check if the user is not an admin
+        if not current_user.get('is_admin'):
+            if review.user_id != current_user['id']:
+                return {'message': 'Unauthorized action.'}, 403
 
         deleted_review = facade.delete_review(review_id)
         if deleted_review:
             return {'message': 'Review deleted successfully'}, 200
         return {'message': 'Review not found'}, 404
 
-@api.route('/reviews/<review_id>')
-class AdminReviewModify(Resource):
-    @jwt_required()
-    @api.expect(add_review_model)
-    @api.doc(security='token')
-    def put(self, review_id):
-        """Update Review by an Admin"""
-        
-        current_user = json.loads(get_jwt_identity())
-        
-        if not current_user.get('is_admin', False):
-            return {'error': 'Admin privileges required'}, 403
-        
-        review = facade.get_review(review_id)
-        
-        if not review:
-            return {'message': 'Review not found'}, 404
-            
-        updated_review_data = api.payload
-        
-        try:
-            updated_review = facade.update_review(review_id, updated_review_data)
-            
-            if updated_review:
-                return {'message': 'Review updated successfully'}, 200
-            
-            return {'message': 'Review not found'}, 404
-        
-        except ValueError as e:
-            return {'message': str(e)}, 400
-        
-    @jwt_required()
-    @api.doc(security='token')
-    def delete(self, review_id):
-        """Delete Review by an Admin"""
-        
-        current_user = json.loads(get_jwt_identity())
-        
-        if not current_user.get('is_admin', False):
-            return {'error': 'Admin privileges required'}, 403
-        
-        review = facade.get_review(review_id)
-        
-        if not review:
-            return {'message': 'Review not found'}, 404    
-        
-        review = facade.get_review(review_id)
-        deleted_review = facade.delete_review(review_id)
-        
-        if deleted_review:
-            return {'message': 'Review deleted successfully'}, 200

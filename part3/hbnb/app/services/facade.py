@@ -7,7 +7,7 @@ from app.persistence.repository import UserRepository
 from app.persistence.repository import PlaceRepository
 from app.persistence.repository import ReviewRepository
 from app.persistence.repository import AmenityRepository
-from app import db
+from app import db, bcrypt
 
 
 class HBnBFacade:
@@ -40,6 +40,7 @@ class HBnBFacade:
     def update_user(self, user_id, user_data):
         user = self.user_repo.get(user_id)
         if user:
+            user_data['password'] = bcrypt.generate_password_hash(user_data['password']).decode('utf-8')
             self.user_repo.update(user_id, user_data)
             return user
         return None

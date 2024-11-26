@@ -19,13 +19,22 @@ user_model = api.model('User', {
 
 @api.route('/')
 class UserList(Resource):
+    @jwt_required()
     @api.expect(user_model, validate=True)
     @api.response(201, 'User successfully created')
     @api.response(400, 'Email already registered')
     @api.response(400, 'Invalid input data')
+    @api.doc(security='token') 
     def post(self):
-        """Register a new user"""
+        """Register a new user (only by an Admin)"""
         user_data = api.payload
+
+        # Retrieve the current user from the JWT token
+        current_user = json.loads(get_jwt_identity())
+
+        # Check if the user is admin
+        if not current_user.get('is_admin'):
+            return {'error': 'Admin privileges required'}, 403
 
         # Simulate email uniqueness check
         # (to be replaced by real validation with persistence)
@@ -70,7 +79,7 @@ class UserResource(Resource):
     @api.response(200, "User Updated")
     @api.doc(security='token') 
     def put(self, user_id):
-        """Update User information"""
+        """Update User information and only admin can update email and password"""
         # Retrieve the current user from the JWT token
         current_user = json.loads(get_jwt_identity())
 
@@ -84,75 +93,27 @@ class UserResource(Resource):
         if not user:
             return {"error": "User not found"}, 404
         
-        # Check if the user is the same as the current user
-        if user.id != current_user['id']:
-            return {"error": "Unauthorized action"}, 403
-        
-        # Check if email and password fields are present in the request payload
-        if 'email' in user_data or 'password' in user_data:
-            # Check if the user is trying to modify email or password
-            if user_data['email'] != user.email or not user.verify_password(user_data['password']):
-                return {"error": "You cannot modify email or password."}, 400
+        # Check if the user is admin
+        if current_user.get('is_admin'):
+            #  Administrators can modify any user, including changing the email and password, but must ensure that the email is not duplicated.
+            if 'email' in user_data:
+                existing_user = facade.get_user_by_email(user_data['email'])
+                if existing_user and existing_user.id != user_id:
+                    return {"error": "Email already in use"}, 400
+
         else:
-            user_data['email'] = user.email
-            user_data['password'] = user.password
-
-        # Update the user data
-        user = facade.update_user(user_id, user_data)
-
-        # Return the updated user data
-        return {
-            'id': user.id,
-            'first_name': user.first_name,
-            'last_name': user.last_name,
-            'email': user.email
-        }, 200
-
-@api.route('/users/')
-class AdminUserCreate(Resource):
-    @jwt_required()
-    @api.expect(user_model, validate=True)
-    @api.doc(security='token')
-    def post(self):
-        """Create User by an Admin"""
-        current_user = json.loads(get_jwt_identity())
-        print("Decoded JWT: ", current_user)
-        
-        if not current_user.get('is_admin', False):
-            return {'error': 'Admin privileges required'}, 403
-
-        user_data = api.payload
-        email = user_data['email']
-        # Check if email is already in use
-        if facade.get_user_by_email(email):
-            return {'error': 'Email already registered'}, 400
-
-        new_user = facade.create_user(user_data)
-
-        return {'id': new_user.id, 'message': 'User successfully created'}, 201
-    
-@api.route('/users/<user_id>')
-class AdminUserModify(Resource):
-    @jwt_required()
-    @api.expect(user_model, validate=True)
-    @api.doc(security='token')
-    def put(self, user_id):
-        """Updated user by Admin"""
-        
-        current_user = json.loads(get_jwt_identity())
-        
-        if not current_user.get('is_admin', False):
-            return {'error': 'Admin privileges required'}, 403
-
-        user_data = api.payload
-        email = user_data['email']
-
-        # Ensure email uniqueness
-        if email:
-            existing_user = facade.get_user_by_email(email)
-            if existing_user and existing_user['user_id'] != user_id:
-                return {'error': 'Email already in use'}, 400
-
+            # Check if the user is the same as the current user
+            if user.id != current_user['id']:
+                return {"error": "Unauthorized action"}, 403
+            
+            # Check if email and password fields are present in the request payload
+            if 'email' in user_data or 'password' in user_data:
+                # Check if the user is trying to modify email or password
+                if user_data['email'] != user.email or not user.verify_password(user_data['password']):
+                    return {"error": "You cannot modify email or password."}, 400
+            else:
+                user_data['email'] = user.email
+                user_data['password'] = user.password
 
         # Update the user data
         user = facade.update_user(user_id, user_data)

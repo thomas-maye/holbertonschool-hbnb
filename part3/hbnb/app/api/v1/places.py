@@ -94,18 +94,24 @@ class PlaceResource(Resource):
     @api.response(400, 'Invalid input data')
     @api.doc(security='token')
     def put(self, place_id):
-        """Update a place by its ID"""
+        """Update a place by its ID (admin can update any place, owner can update their own place)"""
         # Retrieve the current user's from the JWT token
         current_user = json.loads(get_jwt_identity())
         place = facade.get_place(place_id)
+
+        if not place:
+            return {'error': 'Place not found'}, 404
         
-        if place.owner_id != current_user['id']:
-            return {'error': 'Unauthorized action'}, 403
+        # Check if the user is not an admin
+        if not current_user.get('is_admin'):
+            # Check if the user is the owner of the place
+            if place.owner_id != current_user['id']:
+                return {'error': 'Unauthorized action'}, 403
 
         try:
             # Update the place data
             place_data = api.payload
-            place_data['owner_id'] = current_user['id']
+            place_data['owner_id'] = place.owner_id
             updated_place = facade.update_place(place_id, place_data)
             if updated_place:
                 return {
@@ -138,7 +144,7 @@ class PlaceAmenity(Resource):
             return {'error': str(e)}, 404
 
     def delete(self, place_id, amenity_id):
-        """Remove an amenity from a place"""
+        """Remove an amenity from a place""" 
         try:
             # Remove the amenity from the place
             facade.remove_amenity_from_place(place_id, amenity_id)
@@ -171,37 +177,4 @@ class PlaceReviewList(Resource):
             'text': review.text,
             'rating': review.rating
         } for review in reviews], 200
-        
-@api.route('/place/<place_id>')
-class AdminPlaceModify(Resource):
-    @jwt_required()
-    @api.expect(place_model)
-    @api.doc(security='token')
-    def put(self, place_id):
-        """Update place by an Admin"""
-        current_user = json.loads(get_jwt())
-        is_admin = current_user.get('is_admin', False)
-        
-        place_data = api.payload
-        if not is_admin:
-            
-            if place_data.owner_id != current_user['id']:
-                return {'error': 'Unauthorized action'}, 403
-            
-        place = facade.get_place(place_id)
-        
-        if place.owner_id != current_user['id']:
-            return {'error': 'Unauthorized action'}, 403
-        try:
-            # Update the place data
-            place_data['owner_id'] = current_user['id']
-            updated_place = facade.update_place(place_id, place_data)
-            if updated_place:
-                return {
-                    "message": "Place updated successfully"
-                }, 200
-            # Return an error if the place is not found
-            return {'error': 'Place not found'}, 404
-        except ValueError as e:
-            # Return an error if the input data is invalid
-            return {'error': str(e)}, 400
+
