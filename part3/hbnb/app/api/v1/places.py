@@ -130,8 +130,27 @@ class PlaceResource(Resource):
 class PlaceAmenity(Resource):
     @api.response(200, 'Amenity added to place successfully')
     @api.response(404, 'Place or amenity not found')
+    @jwt_required()
+    @api.doc(security='token')
     def post(self, place_id, amenity_id):
         """Add an amenity to a place"""
+        # Retrieve the current user's from the JWT token
+        current_user = json.loads(get_jwt_identity())
+        place = facade.get_place(place_id)
+        aminity = facade.get_amenity(amenity_id)
+
+        if not place:
+            return {'error': 'Place not found'}, 404
+        
+        if not aminity:
+            return {'error': 'Amenity not found'}, 404
+        
+        # Check if the user is not an admin
+        if not current_user.get('is_admin'):
+            # Check if the user is the owner of the place
+            if place.owner_id != current_user['id']:
+                return {'error': 'Unauthorized action'}, 403
+            
         try:
             # Add the amenity to the place
             facade.add_amenity_to_place(place_id, amenity_id)
@@ -143,8 +162,29 @@ class PlaceAmenity(Resource):
             # Return an error if the place or amenity is not found
             return {'error': str(e)}, 404
 
+    @api.response(200, 'Amenity deleted to place successfully')
+    @api.response(404, 'Place or amenity not found')
+    @jwt_required()
+    @api.doc(security='token')
     def delete(self, place_id, amenity_id):
-        """Remove an amenity from a place""" 
+        """Remove an amenity from a place"""
+        # Retrieve the current user's from the JWT token
+        current_user = json.loads(get_jwt_identity())
+        place = facade.get_place(place_id)
+        aminity = facade.get_amenity(amenity_id)
+
+        if not place:
+            return {'error': 'Place not found'}, 404
+        
+        if not aminity:
+            return {'error': 'Amenity not found'}, 404
+        
+        # Check if the user is not an admin
+        if not current_user.get('is_admin'):
+            # Check if the user is the owner of the place
+            if place.owner_id != current_user['id']:
+                return {'error': 'Unauthorized action'}, 403
+
         try:
             # Remove the amenity from the place
             facade.remove_amenity_from_place(place_id, amenity_id)
