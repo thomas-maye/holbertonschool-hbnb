@@ -1,10 +1,4 @@
-/* 
-  This is a SAMPLE File to get you started. Follow the instructions on the project to complete the tasks. 
-  You'll probably need to override some of theese styles.
-*/
-
-/* Native HTML elements */
-
+/* === Base Styles === */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -15,41 +9,60 @@
 body {
     background-color: #f8f5f5;
     color: #333;
+    font-size: 16px;
+    line-height: 1.5;
 }
 
+/* === Header === */
 header {
     background-color: #ff9800;
     color: #fff;
     padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
+header .logo {
+    width: 120px;
+    height: auto;
+}
+
+/* === Navigation Bar === */
 nav {
-	display: flex;
-	flex-direction: row;
-	flex-wrap: nowrap;
-	justify-content: space-between;
-	align-items: stretch;
-	align-content: stretch;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #ff9800;
+    padding: 0.5rem 1rem;
 }
 
 nav a {
     color: #fff;
     text-decoration: none;
-    margin-left: 1rem;
+    margin: 0 1rem;
+    font-weight: bold;
 }
 
-main {
-    padding: 2rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+nav a:hover {
+    text-decoration: underline;
 }
 
+/* === Footer === */
 footer {
     background-color: #ff9800;
     color: #fff;
     padding: 1rem;
     text-align: center;
+}
+
+/* === Main Content === */
+main {
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 h1, h2, h3 {
@@ -61,14 +74,15 @@ select {
     margin-bottom: 20px;
 }
 
-/* All classes */
-
+/* === Flex Containers === */
 .flex-container {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
+    gap: 20px;
 }
 
+/* === Place Cards === */
 .place-card {
     display: flex;
     flex-direction: column;
@@ -76,11 +90,10 @@ select {
     border: 1px solid #ddd;
     background-color: #ffffff;
     border-radius: 10px;
-    padding: 30px;
-    margin: 5px;
+    padding: 20px;
+    margin: 10px;
     text-align: center;
-    -webkit-box-shadow: 0px 0px 15px 3px rgba(0,0,0,0.07); 
-    box-shadow: 0px 0px 15px 3px rgba(0,0,0,0.07);
+    box-shadow: 0px 0px 15px 3px rgba(0, 0, 0, 0.07);
     width: 30%;
     height: 200px;
     box-sizing: border-box;
@@ -89,29 +102,83 @@ select {
 .place-card h3, .place-card p {
     margin: auto;
     width: 100%;
-    white-space: normal;
     word-wrap: break-word;
     overflow: hidden;
+    white-space: normal;
 }
 
 .place-card h3 {
     margin-bottom: 8px;
 }
 
-#place-details, #reviews {
+/* === Buttons === */
+button, .details-button {
+    background-color: #ff9800;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1rem;
+    transition: background-color 0.3s ease, transform 0.1s ease-in-out;
+    text-align: center;
+    text-decoration: none; /* Ensures compatibility for buttons styled as links */
+}
+
+button:hover, .details-button:hover {
+    background-color: #e68a00;
+    transform: scale(1.05); /* Slight zoom for hover effect */
+}
+
+button:active, .details-button:active {
+    transform: scale(0.95); /* Slight compression for active state */
+}
+
+/* === Place Details === */
+.place-details {
     display: flex;
     flex-direction: column;
     align-items: center;
+    text-align: center;
+    padding: 20px;
+    margin: 20px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background-color: #fff;
     width: 100%;
-    box-sizing: border-box;
+    box-shadow: 0px 0px 15px 3px rgba(0, 0, 0, 0.07);
 }
 
 .place-info {
     text-align: center;
     line-height: 2;
+    margin-bottom: 20px;
 }
 
-.place-info, .review-card, .add-review {
+/* === Review Cards === */
+.review {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+    margin: 20px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background-color: #fff;
+    width: 100%;
+    box-shadow: 0px 0px 15px 3px rgba(0, 0, 0, 0.07);
+}
+
+.review-card {
+    text-align: left;
+    line-height: 2;
+    margin-bottom: 20px;
+}
+
+/* === Add Review Form === */
+.add-review {
     border: 1px solid #ddd;
     background-color: #ffffff;
     border-radius: 10px;
@@ -119,31 +186,38 @@ select {
     margin: 20px;
     width: 100%;
     box-sizing: border-box;
-    -webkit-box-shadow: 0px 0px 15px 3px rgba(0,0,0,0.07); 
-    box-shadow: 0px 0px 15px 3px rgba(0,0,0,0.07);
-}
-
-.review-card {
-    margin: 10px 0;
+    box-shadow: 0px 0px 15px 3px rgba(0, 0, 0, 0.07);
 }
 
 .add-review textarea, .add-review select, .add-review button {
     border-radius: 5px;
     margin-top: 10px;
     padding: 10px;
+    width: 100%;
+    border: 1px solid #ddd;
+    font-size: 1rem;
 }
 
-.login-button, .generic-button, .details-button {
-    background-color: #ff9800;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    padding: 10px;
-    cursor: pointer;
+.add-review button {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: auto;
+    padding: 10px 20px
 }
 
+/* Form Review Styles */
 .form-review {
-    width : 100%;
+    border: 1px solid #ddd;
+    background-color: #ffffff;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 20px;
+    width: 100%;
+    box-sizing: border-box;
+    box-shadow: 0px 0px 15px 3px rgba(0, 0, 0, 0.07);
+    font-size: 1rem;
+    width: 100%;
     margin: 0 auto;
     padding: 20px;
 }
@@ -163,19 +237,55 @@ form.form-review h2 {
     margin-top: 5px;
     border: 1px solid #ddd;
     border-radius: 5px;
+    font-size: 1rem;
 }
 
-.form-review button {
-    width: 50 px;
-    padding: 10px;
-    margin-top: 20px;
-    background-color: #ff9800;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+/* === Responsive Design === */
+@media screen and (max-width: 768px) {
+    .place-card {
+        width: 100%;
+    }
+
+    .flex-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    nav {
+        flex-direction: column;
+    }
+
+    nav a {
+        margin: 10px 0;
+    }
 }
 
-.form-review button:hover {
-    background-color: #555;
+.login-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border: 1px solid #ddd;
+    background-color: #ffffff;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 10px;
+    text-align: center;
+    box-shadow: 0px 0px 15px 3px rgba(0, 0, 0, 0.07);
+    width: 20%;
+    height: 200px;
+    box-sizing: border-box;
+    font-size: 16px;
+    overflow: hidden;
+}
+
+.login-card input[type="email"],
+.login-card input[type="password"] {
+    margin-bottom: 10px;
+    font-size: 1rem;
+}
+
+.login-card button {
+    margin-top: 10px;
+    width: 100%;
+    box-sizing: border-box; 
 }

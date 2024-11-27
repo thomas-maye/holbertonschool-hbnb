@@ -26,35 +26,33 @@
         </nav>
     </header>
     <main>
-        <!--Display extended information about the place, including the host, price, description, and amenities using the classes place-details, and place-info.
-        List reviews if they exist, each displayed as a card with the comment, user name, and rating using the class review-card.
-        Include a button to navigate to the add_review.html page if the user is logged in.
-        Optional: Substitute the previous button with a form to add a new review if the user is logged in, using the classes add-review and form.-->
+        <h1>Place Details</h1>
         <section id="place-details" class="place-details">
-            <div class="place-info">
-                <h1>Place Name</h1>
-                <p>Host: <span id="host">Host Name</span></p>
-                <p>Price: <span id="price">Price</span></p>
-                <p>Description: <span id="description">Description</span></p>
-                <p>Amenities: <span id="amenities">Amenities</span></p>
-            </div>
+                <div class="place-info">
+                    <p><strong>Host: </strong><span id="host">Host Name</span></p>
+                    <p><strong>Price: </strong><span id="price">Price</span></p>
+                    <p><strong>Description: </strong><span id="description">Description</span></p>
+                    <p><strong>Amenities: </strong><span id="amenities">Amenities</span></p>
+                </div>
         </section>
-        <section id="reviews">
+        <h2>Review</h2>
+        <section id="reviews" class="review">
             <!-- Reviews will be populated dynamically -->
             <div class="review-card">
-                <p>Comment: <span id="comment">Comment</span></p>
-                <p>User: <span id="user">User Name</span></p>
-                <p>Rating: <span id="rating">Rating</span></p>
+                <p><strong>Comment: </strong><span id="comment">Comment</span></p>
+                <p><strong>User: </strong><span id="user">User Name</span></p>
+                <p><strong>Rating: </strong><span id="rating">Rating</span></p>
             </div>
         </section>
+        <h2>Add Review</h2>
         <section id="add-review" class="add-review">
             <form id="form" class="form">
                 <div>
-                    <label for="review">Your Review:</label>
+                    <label for="review"><strong>Your Review: </strong></label>
                     <textarea id="review" name="review" required></textarea>
                 </div>
                 <div>
-                    <label for="rating">Rating:</label>
+                    <label for="rating"><strong>Rating:</strong></label>
                     <select id="rating" name="rating" required>
                                 <!-- Options for rating -->
                                 <option value="1 Star">1 Star</option>
@@ -65,7 +63,7 @@
                 </div>
                 </select>
                 <div>
-                    <button type="submit" class="generic-button">Submit Review</button>
+                    <button type="submit" class="button">Submit Review</button>
                 </div>
             </form>
         </section>
