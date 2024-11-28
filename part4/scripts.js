@@ -32,9 +32,7 @@ async function loginUser(email, password) {
 
         if (response.ok) {
             const data = await response.json();
-
-            document.cookie = `token=${data.access_token}; path=/; Secure`;
-
+            document.cookie = "token=" + data.access_token + "; path=/";
             window.location.href = 'index.html';
         } else {
             const errorData = await response.json();
