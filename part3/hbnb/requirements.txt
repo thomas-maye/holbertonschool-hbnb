@@ -6,3 +6,4 @@ flask-jwt-extended
 sqlalchemy
 flask-sqlalchemy
 sqlite3
+flask-cors

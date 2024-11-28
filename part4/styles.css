@@ -256,9 +256,9 @@ form.form-review h2 {
     text-align: center;
     box-shadow: 0px 0px 15px 3px rgba(0, 0, 0, 0.07);
     width: 20%;
-    height: 200px;
-    min-width: 300px; /* Ajouté pour définir une largeur minimale */
-    min-height: 200px; /* Ajouté pour définir une hauteur minimale */
+    height: 300px;
+    min-width: 300px;
+    min-height: 200px; 
     box-sizing: border-box;
     font-size: 16px;
     overflow: hidden;
@@ -308,4 +308,11 @@ form.form-review h2 {
     border: 1px solid #ddd;
     border-radius: 5px;
     font-size: 1rem;
+}
+
+#error-message {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #d32f2f;
+    display: none;
 }
