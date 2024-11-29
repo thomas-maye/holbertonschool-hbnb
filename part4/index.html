@@ -28,13 +28,17 @@
     <main>
         <h1>Available Places</h1>
         <section id="filter">
-            <label for="price-filter"><strong>Filter by price:</strong></label>
-            <select id="price-filter" class="price-filter">
-                <option value="All">All</option>
-                <option value="150">$150</option>
-                <option value="300">$300</option>
-                <option value="450">$450</option>
-            </select>
+            <div id="filter-container">
+                <label for="price-filter"><strong>Filter by price:</strong></label>
+                <select id="price-filter" class="price-filter">
+                    <option value="all">All</option>
+                    <option value="100">$100</option>
+                    <option value="200">$200</option>
+                    <option value="300">$300</option>
+                    <option value="400">$400</option>
+                    <option value="500">$500</option>
+                </select>
+            </div>
         </section>
         <section id="places-list" class="flex-container">
             <!-- Places will be populated dynamically -->

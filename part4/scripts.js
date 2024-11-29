@@ -18,9 +18,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    checkAuthentication();   
+    checkAuthentication();
 });
 
+// Function to log in the user
 async function loginUser(email, password) {
     const apiUrl = 'http://127.0.0.1:5000/api/v1/auth/login';
     try {
@@ -46,6 +47,7 @@ async function loginUser(email, password) {
     }
 }
 
+// Function to display an error message
 function displayErrorMessage(message) {
     const errorContainer = document.getElementById('error-message');
     if (errorContainer) {
@@ -56,6 +58,7 @@ function displayErrorMessage(message) {
     }
 }
 
+// Function to get a cookie value by its name
 function getCookieValue(cookieName) {
     const name = cookieName + "=";
     const decodedCookie = decodeURIComponent(document.cookie);
@@ -70,6 +73,7 @@ function getCookieValue(cookieName) {
     return null;
 }
 
+// Function to check if the user is authenticated
 function checkAuthentication() {
     const token = getCookieValue('token');
     const loginLink = document.getElementById('login-link');
@@ -82,6 +86,7 @@ function checkAuthentication() {
     }
 }
 
+// Function to fetch the places from the API
 async function fetchPlaces(token) {
     try {
         const response = await fetch('http://127.0.0.1:5000/api/v1/places', {
@@ -103,6 +108,7 @@ async function fetchPlaces(token) {
     }
 }
 
+// Function to display the places
 function displayPlaces(places) {
     const placesList = document.getElementById('places-list');
     placesList.innerHTML = '';
@@ -110,17 +116,34 @@ function displayPlaces(places) {
     places.forEach(place => {
         const placeDiv = document.createElement('div');
         placeDiv.className = 'place';
-        console.log(place);
+        placeDiv.setAttribute('data-price', place.price);
         placeDiv.innerHTML = `
             <div class="place-card">
                 <h2>${place.title}</h2>
-                <p>${place.description}</p>
-                <p>Price: $${place.price}</p>
-                <p>Location: ${place.latitude} ${place.longitude}</p>
-                <button class="details-button">View Details</button>
+                <p><em>${place.description}</em></p>
+                <p><strong>Price: </strong>$${place.price}</p>
+                <p><strong>Location: </strong>${place.latitude} ;${place.longitude}</p>
+                <button class="details-button" onclick="window.location.href='/place.html?id=${place.id}'">View Details</button>
             </div>
         `;
 
         placesList.appendChild(placeDiv);
     });
 }
+
+// Event listener for the price filter
+document.getElementById('price-filter').addEventListener('change', function() {
+    const selectedPrice = this.value;
+    const places = document.querySelectorAll('#places-list .place');
+
+    places.forEach(place => {
+        const placePrice = parseInt(place.getAttribute('data-price'), 10);
+
+        if (selectedPrice === 'all' || placePrice <= selectedPrice) {
+            place.style.display = 'block';
+        } else {
+            place.style.display = 'none';
+        }
+    });
+});
+
