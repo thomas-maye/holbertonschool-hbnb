@@ -21,43 +21,29 @@
                 <a href="add_review.html" id="add-review-link">Add Review</a>
             </div>
             <div>
-                <a href="login.html" class="login">Login</a>
+                <a href="login.html" class="login" id="login-link">Login</a>
             </div>
         </nav>
     </header>
     <main>
         <h1>Available Places</h1>
         <section id="filter">
-            <label for="price-filter"><strong>Max Price:</strong></label>
+            <label for="price-filter"><strong>Filter by price:</strong></label>
             <select id="price-filter" class="price-filter">
-                <option value="price-asc">All</option>
-                <option value="price-desc">100</option>
-                <option value="rating-desc">150</option>
-                <option value="rating-desc">200</option>
+                <option value="All">All</option>
+                <option value="150">$150</option>
+                <option value="300">$300</option>
+                <option value="450">$450</option>
             </select>
         </section>
         <section id="places-list" class="flex-container">
-            <div class="place-card">
-                <h2>Place 1</h2>
-                <p>Price: 100</p>
-                <button class="details-button">View Details</button>
-            </div>
-            <div class="place-card">
-                <h2>Place 2</h2>
-                <p>Price: 150</p>
-                <button class="details-button">View Details</button>
-            </div>
-            <div class="place-card">
-                <h2>Place 3</h2>
-                <p>Price: 200</p>
-                <button class="details-button">View Details</button>
-            </div>
+            <!-- Places will be populated dynamically -->
         </section>
     </main>
-    <script src="scripts.js"></script>
     <footer>
         All rights reserved
     </footer>
+    <script src="scripts.js"></script>
 </body>
 
 </html>
